@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChipFresco · Cómputo, Mac y consolas en Hermosillo</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
+<style>
+  /* ---------- VARIABLES GLOBALES Y TEMAS DINÁMICOS ---------- */
+  :root {
+    --bg: #0A0A12; 
+    --bg-elevated: #161625; 
+    --card: #10101A;
+    --accent-1: #0044FF; 
+    --accent-2: #FF004D; 
+    --text-main: #F8FAFC;
+    --text-muted: #94A3B8;
+    --wa: #25D366;
+    --wa-deep: #1DA851;
+    --font-display: 'Clash Display', 'Arial Black', sans-serif;
+    --font-body: 'General Sans', 'Segoe UI', system-ui, sans-serif;
+  }
+
+  body[data-theme="windows"] {
+    --bg: #071018; 
+    --bg-elevated: #102A43; 
+    --card: #0A1929;
+    --accent-1: #0078D4; 
+    --accent-2: #00B4D8; 
+  }
+
+  body[data-theme="mac"] {
+    --bg: #000000; 
+    --bg-elevated: #1C1C1E; 
+    --card: #09090B;
+    --accent-1: #FFFFFF; 
+    --accent-2: #A1A1AA; 
+    --text-muted: #A1A1AA;
+  }
+
+  body[data-theme="consolas"] {
+    --bg: #0C0A10; 
+    --bg-elevated: #231131; 
+    --card: #130B1A;
+    --accent-1: #10B981; 
+    --accent-2: #8B5CF6; 
+  }
+
+  body[data-theme="armado"] {
+    --bg: #14080E; 
+    --bg-elevated: #311315; 
+    --card: #1C0A10;
+    --accent-1: #EF4444; 
+    --accent-2: #F59E0B; 
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  
+  body{
+    background:var(--bg); color:var(--text-main);
+    font-family:var(--font-body); line-height:1.55; overflow-x:hidden;
+    transition: background-color 0.6s ease, color 0.6s ease;
+  }
+  
+  h1,h2,h3,h4,.brand-text,.logo-word{font-family:var(--font-display);}
+  a{color:inherit; text-decoration: none;}
+  section{padding:70px 0;}
+  .wrap{max-width:1100px; margin:0 auto; padding:0 24px;}
+  img,svg{max-width:100%;}
+
+  /* ---------- TABS LOGIC ---------- */
+  .tab-content { display: none; animation: fadeIn 0.5s ease; }
+  .tab-content.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ---------- NAV & BUTTONS ---------- */
+  header{position:sticky; top:0; z-index:50; background:rgba(0,0,0,0.5); backdrop-filter:blur(12px); border-bottom:1px solid rgba(255,255,255,0.05); transition: border-color 0.6s;}
+  nav{display:flex; align-items:center; justify-content:space-between; padding:15px 24px; gap:20px;}
+  .brand{display:flex; align-items:center; gap:12px; flex-shrink:0; cursor: pointer;}
+  .brand svg{height:42px; width:auto; transition: transform 0.3s;}
+  .brand:hover svg{transform: scale(1.05) rotate(5deg);}
+  .brand-text{font-weight:700; font-size:1.25rem; letter-spacing: 0.5px;}
+  .brand-text span{background:linear-gradient(120deg, var(--accent-2), var(--accent-1)); -webkit-background-clip:text; background-clip:text; color:transparent; transition: 0.6s;}
+  
+  nav .links{display:flex; gap:28px; font-size:0.9rem; color:var(--text-muted); white-space:nowrap;}
+  nav .links a{cursor: pointer; transition: color 0.3s ease;}
+  nav .links a:hover, nav .links a.active-link{color:var(--accent-1); font-weight: 600;}
+  
+  .btn-wa{
+    display:inline-flex; align-items:center; gap:8px;
+    background:linear-gradient(135deg,var(--wa),var(--wa-deep));
+    color:#062611; font-weight:700; font-size:0.86rem;
+    padding:10px 20px; border-radius:999px; text-decoration:none; white-space:nowrap;
+    box-shadow:0 8px 20px rgba(37,211,102,0.22); cursor: pointer; border: none; transition: transform 0.2s;
+  }
+  .btn-wa:hover{transform: translateY(-2px);}
+  
+  .btn-ghost{
+    display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+    border:1px solid var(--accent-1); color:var(--text-main); background:transparent;
+    padding:10px 20px; border-radius:999px; text-decoration:none; font-weight:600; font-size:0.86rem; font-family:var(--font-body);
+    transition: all 0.3s ease;
+  }
+  .btn-ghost:hover{background: var(--accent-1); color: var(--bg); box-shadow: 0 0 15px var(--accent-1);}
+  
+  .btn-back {
+    margin-bottom: 30px; display: inline-block; color: var(--text-muted); border-color: rgba(255,255,255,0.2);
+  }
+  .btn-back:hover { background: rgba(255,255,255,0.05); color: var(--text-main); box-shadow: none;}
+  
+  @media (max-width:900px){ nav .links{display:none;} }
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative; padding:90px 0 60px; overflow:hidden;}
+  .hero::before,.hero::after{content:''; position:absolute; border-radius:50%; filter:blur(100px); opacity:0.25; z-index:0; transition: background 0.6s ease;}
+  .hero::before{width:450px; height:450px; background:var(--accent-2); top:-150px; left:-120px;}
+  .hero::after{width:400px; height:400px; background:var(--accent-1); bottom:-160px; right:-100px;}
+  .hero .wrap{position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; text-align:center;}
+  .eyebrow{display:inline-block; font-size:0.75rem; letter-spacing:2.5px; text-transform:uppercase; color:var(--accent-2); border:1px solid var(--accent-2); padding:6px 16px; border-radius:999px; margin-bottom:20px; font-weight: 600;}
+  .hero h1{font-size:3rem; font-weight:700; line-height:1.15; margin-bottom:20px; max-width: 850px;}
+  .hero h1 em{font-style:normal; background:linear-gradient(120deg, var(--accent-2), var(--accent-1)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .hero p.lead{color:var(--text-muted); font-size:1.1rem; max-width:65ch; margin-bottom:32px;}
+
+  /* ---------- TYPE SELECTOR MENU ---------- */
+  .type-selector{display:grid; grid-template-columns:repeat(3,1fr); gap:24px; width: 100%; max-width: 950px; margin-top: 40px;}
+  @media (max-width:768px){ .type-selector{grid-template-columns:1fr;} }
+  .type-card{
+    background:var(--card); border:1px solid rgba(255,255,255,0.05); border-radius:24px; padding:35px 20px; 
+    display:flex; flex-direction:column; align-items:center; gap:18px; cursor:pointer; 
+    transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative; overflow: hidden;
+  }
+  .type-card::before{
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+    background: linear-gradient(90deg, var(--accent-2), var(--accent-1)); opacity: 0; transition: opacity 0.3s;
+  }
+  .type-card:hover{transform:translateY(-10px); border-color:var(--accent-1); box-shadow:0 20px 40px rgba(0,0,0,0.4);}
+  .type-card:hover::before{opacity: 1;}
+  .type-card svg{width:65px; height:65px; fill:var(--text-main); transition: fill 0.3s;}
+  .type-card:hover svg{fill: var(--accent-1);}
+  .type-card h3{font-size:1.25rem; font-weight:600;}
+
+  /* ---------- SECTION HEADS & CARDS ---------- */
+  .section-head{max-width:60ch; margin-bottom:40px;}
+  .section-head h2{font-size:2rem; font-weight:700; margin-top:8px;}
+  .section-head p{color:var(--text-muted); margin-top:12px; font-size: 1.05rem;}
+  .subgroup-title{font-family:var(--font-display); font-size:1.1rem; font-weight:600; margin:40px 0 16px; display:flex; align-items:center; gap:12px;}
+  .subgroup-title::before{content:''; width:24px; height:3px; background:var(--accent-1); display:inline-block; border-radius:2px;}
+  .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .grid-2{display:grid; grid-template-columns:repeat(2,1fr); gap:20px; align-items: stretch;}
+  @media (max-width:860px){ .grid-3{grid-template-columns:1fr;} }
+  @media (max-width:720px){ .grid-2{grid-template-columns:1fr;} }
+  
+  /* Clickable Cards */
+  .price-card{
+    background:var(--card); border-radius:20px; padding:28px; border:1px solid rgba(255,255,255,0.05); 
+    display:flex; flex-direction:column; gap:10px; cursor: pointer; 
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s;
+  }
+  .price-card:hover{transform: translateY(-5px); border-color: var(--accent-1); box-shadow: 0 10px 30px rgba(0,0,0,0.3);}
+  .price-card.featured{border-color:var(--accent-1); box-shadow:0 0 25px rgba(0,0,0,0.2) inset;}
+  .price-card h3{font-size:1.1rem; font-weight:600; line-height: 1.3;}
+  .price-card .tag{font-size:0.75rem; color:var(--accent-2); text-transform:uppercase; letter-spacing:1px; font-weight:700;}
+  .price-card .price{font-family:var(--font-display); font-size:1.8rem; font-weight:700; color:var(--accent-1); margin:4px 0;}
+  .price-card .price small{font-size:0.9rem; color:var(--text-muted); font-weight:500;}
+  .price-card p.desc{color:var(--text-muted); font-size:0.9rem;}
+  .price-card ul{list-style:none; color:var(--text-muted); font-size:0.9rem; display:flex; flex-direction:column; gap:6px; margin-top:6px;}
+  .price-card ul li::before{content:"✓ "; color:var(--accent-1); font-weight: bold;}
+
+  /* ---------- MODAL CONFIRMACIÓN ---------- */
+  .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 100; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+  .modal-overlay.active { display: flex; opacity: 1; }
+  .modal-box { background: var(--card); padding: 35px; border-radius: 24px; max-width: 420px; width: 90%; text-align: center; border: 1px solid var(--accent-1); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+  .modal-box h3 { margin-bottom: 12px; font-family: var(--font-display); font-size: 1.4rem;}
+  .modal-box p { color: var(--text-muted); margin-bottom: 28px; font-size: 1rem; }
+  .modal-service-name { color: var(--accent-1); font-weight: 700; display: block; margin-top: 10px; font-size: 1.2rem; }
+  .modal-buttons { display: flex; flex-direction: column; gap: 14px; }
+
+  /* ---------- SLIDERS ANTES/DESPUÉS ---------- */
+  .ba-slider{position:relative; margin:35px auto; max-width:550px; border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); aspect-ratio:1 / 1; box-shadow: 0 20px 40px rgba(0,0,0,0.4);}
+  .ba-layer{position:absolute; inset:0; overflow:hidden;}
+  .ba-layer img{width:100%; height:100%; object-fit:cover; display:block;}
+  .ba-tag{position:absolute; top:16px; background:rgba(0,0,0,0.75); backdrop-filter:blur(5px); color:#FFF; font-size:0.75rem; font-weight:700; padding:6px 14px; border-radius:999px; pointer-events:none; z-index:3; border: 1px solid rgba(255,255,255,0.1);}
+  .ba-tag-left{left:16px;} .ba-tag-right{right:16px;}
+  .ba-divider{position:absolute; top:0; bottom:0; width:4px; background:var(--accent-1); pointer-events:none; z-index:2; transform:translateX(-50%); box-shadow: 0 0 15px rgba(0,0,0,0.8);}
+  .ba-handle{position:absolute; top:50%; width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,var(--accent-2),var(--accent-1)); display:flex; align-items:center; justify-content:center; color:#000; font-weight:800; transform:translate(-50%,-50%); pointer-events:none; z-index:3; box-shadow:0 4px 15px rgba(0,0,0,0.6); border: 3px solid var(--bg);}
+  .ba-range{position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:ew-resize; z-index:4;}
+
+  /* ---------- INFO BOX & IMAGE BOX ---------- */
+  .info-box{background:var(--bg-elevated); border-left:5px solid var(--accent-2); padding:24px; border-radius:12px;}
+  .info-box h4{margin-bottom:10px; color:var(--accent-2); font-size: 1.1rem;}
+  .info-box p{font-size:0.95rem; color:var(--text-muted);}
+  .image-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); }
+
+  /* ---------- INFINITE MARQUEE (MARCAS GAMER) ---------- */
+  .marquee {
+    display: flex; overflow: hidden; background: var(--bg-elevated); padding: 30px 0;
+    border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 40px;
+  }
+  .marquee-track {
+    display: flex; align-items: center; justify-content: space-around; flex-shrink: 0; min-width: 100%; gap: 60px; padding-right: 60px; 
+    animation: scroll-marquee 25s linear infinite;
+  }
+  .marquee-track img { width: 140px; height: 55px; object-fit: contain; filter: grayscale(100%) opacity(0.5); transition: all 0.3s ease; }
+  .marquee-track img:hover { filter: grayscale(0%) opacity(1); transform: scale(1.1); }
+  @keyframes scroll-marquee { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+
+  /* ---------- ASSISTANT PANEL ---------- */
+  .fab-bot{position:fixed; bottom:24px; right:24px; z-index:80; width:68px; height:68px; border-radius:50%; background:linear-gradient(135deg,var(--accent-1),var(--accent-2)); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.8rem; box-shadow:0 10px 30px rgba(0,0,0,0.5); border:none; transition: transform 0.3s;}
+  .fab-bot:hover { transform: scale(1.1) rotate(5deg); }
+  .bot-panel{position:fixed; bottom:110px; right:24px; z-index:90; width:380px; max-width:90vw; max-height:600px; height:80vh; background:var(--card); border:1px solid rgba(255,255,255,0.08); border-radius:20px; display:none; flex-direction:column; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,0.6);}
+  .bot-panel.open{display:flex; animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
+  @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+  .bot-head{padding:16px 20px; background:var(--bg-elevated); font-weight:700; font-size:0.95rem; display:flex; justify-content:space-between; align-items:center; font-family:var(--font-display); border-bottom: 1px solid rgba(255,255,255,0.05);}
+  .bot-head span.dot{width:10px; height:10px; background:var(--accent-1); border-radius:50%; display:inline-block; margin-right:8px; box-shadow: 0 0 8px var(--accent-1);}
+  .bot-close{cursor:pointer; color:var(--text-muted); font-size:1.2rem;}
+  .bot-msgs{flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; font-size:0.9rem;}
+  .msg{padding:12px 16px; border-radius:14px; max-width:85%; line-height:1.45; white-space:pre-line;}
+  .msg.bot{background:var(--bg-elevated); align-self:flex-start; border-bottom-left-radius:4px; color: var(--text-main);}
+  .msg.user{background:var(--accent-1); color:#FFF; font-weight: 500; align-self:flex-end; border-bottom-right-radius:4px;}
+  .bot-suggestions{display:flex; flex-wrap:wrap; gap:8px; padding:12px 16px; border-top:1px solid rgba(255,255,255,0.05); background: var(--bg-elevated);}
+  .chip-btn{background:transparent; border:1px solid var(--accent-1); color:var(--text-main); font-size:0.8rem; padding:8px 14px; border-radius:999px; cursor:pointer; font-family:var(--font-body); transition: all 0.2s;}
+  .chip-btn:hover{background:var(--accent-1); color:#FFF;}
+  .chip-confirm{display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg,var(--wa),var(--wa-deep)); color:#06210F; font-weight:700; padding:12px 16px; border-radius:14px; text-decoration:none; font-size:0.9rem; margin-top:4px; cursor: pointer; border:none;}
+  .bot-input-row{display:flex; gap:10px; padding:12px 16px; border-top:1px solid rgba(255,255,255,0.05); background: var(--card);}
+  .bot-input-row input{flex:1; background:var(--bg-elevated); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:12px 14px; color:var(--text-main); font-family:var(--font-body); font-size:0.9rem;}
+  .bot-input-row button{background:var(--accent-1); border:none; color:#FFF; font-weight:800; padding:0 18px; border-radius:12px; cursor:pointer; font-size: 1.2rem;}
+  
+  /* --- FIX: Colores de texto del bot para el tema MAC --- */
+  body[data-theme="mac"] .msg.user,
+  body[data-theme="mac"] .chip-btn:hover,
+  body[data-theme="mac"] .bot-input-row button {
+    color: #000;
+  }
+</style>
+</head>
+<body data-theme="home">
+
+<!-- MODAL DE CONFIRMACIÓN -->
+<div class="modal-overlay" id="service-modal">
+  <div class="modal-box">
+    <h3>¿Iniciar solicitud?</h3>
+    <p>Has seleccionado:<span class="modal-service-name" id="modal-service-display">Servicio</span>¿Cómo prefieres contactarnos para agendar?</p>
+    <div class="modal-buttons">
+      <button class="btn-wa" onclick="sendServiceWa()" style="width: 100%; justify-content: center;">Contactar por WhatsApp</button>
+      <button class="btn-ghost" onclick="openServiceBot()" style="width: 100%; justify-content: center;">Hablar con el Asistente Virtual</button>
+      <button class="btn-ghost btn-back" onclick="closeModal()" style="width: 100%; justify-content: center; margin-bottom: 0;">Volver atrás</button>
+    </div>
+  </div>
+</div>
+
+<header>
+  <nav class="wrap">
+    <div class="brand" onclick="openTab('home')">
+      <!-- Logo -->
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="logoGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="var(--accent-2)"/> 
+            <stop offset="100%" stop-color="var(--accent-1)"/> 
+          </linearGradient>
+        </defs>
+        <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" fill="none" stroke="url(#logoGrad)" stroke-width="7" stroke-linejoin="round"/>
+        <path d="M50 25 V75 M30 40 L70 60 M30 60 L70 40" stroke="url(#logoGrad)" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="50" cy="50" r="14" fill="var(--bg-elevated)" stroke="url(#logoGrad)" stroke-width="5"/>
+        <circle cx="50" cy="50" r="5" fill="var(--accent-1)"/>
+      </svg>
+      <div class="brand-text">Chip<span>Fresco</span></div>
+    </div>
+    <div class="links">
+      <a onclick="openTab('windows')" id="nav-windows">Windows</a>
+      <a onclick="openTab('mac')" id="nav-mac">Mac</a>
+      <a onclick="openTab('consolas')" id="nav-consolas">Consolas</a>
+      <a onclick="openTab('armado')" id="nav-armado">Armado de PC</a>
+    </div>
+    <a href="https://wa.me/5216623800032?text=Hola%20An%C3%ADbal,%20necesito%20ayuda%20con%20un%20equipo." target="_blank" class="btn-wa">WhatsApp Directo</a>
+  </nav>
+</header>
+
+<!-- ================= PESTAÑA INICIO ================= -->
+<div id="tab-home" class="tab-content active">
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow">Hermosillo · Recolección y entrega gratis</span>
+      <h1>Qué Hacemos en <em>ChipFresco</em></h1>
+      <p class="lead">Mantenimiento preventivo, reparaciones, formateos y ensamblaje a medida para revivir y potenciar tu tecnología.</p>
+      
+      <button class="btn-ghost" style="margin-bottom: 20px;" onclick="document.getElementById('botPanel').classList.add('open'); if(botState==='init') botFlow();">Revisar planes con el Asistente</button>
+
+      <h2 style="margin-top: 50px; font-size: 1.5rem;">¿Para qué tipo de equipo necesitas ayuda?</h2>
+      
+      <div class="type-selector">
+        <div class="type-card" onclick="openTab('windows')">
+          <svg viewBox="0 0 24 24"><path d="M2 22h9.5v-9.5H2V22zm0-11h9.5V1.5L2 2.8v8.2zm10.5-9.2v9.2H23V0l-10.5 1.8zm0 11.2V22H23v-9.5H12.5z"/></svg>
+          <h3>Computadora Windows</h3>
+        </div>
+        <div class="type-card" onclick="openTab('consolas')">
+          <svg viewBox="0 0 24 24"><path d="M21 9.5c0-1.4-1.1-2.5-2.5-2.5h-13C4.1 7 3 8.1 3 9.5v5c0 1.4 1.1 2.5 2.5 2.5h1.5l1.5-3h7l1.5 3h1.5c1.4 0 2.5-1.1 2.5-2.5v-5zm-14.5 1.5c-.8 0-1.5-.7-1.5-1.5S5.7 8 6.5 8 8 8.7 8 9.5 7.3 11 6.5 11zm11 3c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm2-2c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1z"/></svg>
+          <h3>Consola de Videojuegos</h3>
+        </div>
+        <div class="type-card" onclick="openTab('mac')">
+          <svg viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.19 2.31-.88 3.5-.8 1.54.11 2.8.76 3.61 1.95-3.06 1.73-2.54 5.92.51 7.15-.65 1.63-1.6 3.03-2.7 4.07V20.28zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+          <h3>Equipo Apple</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= PESTAÑA WINDOWS ================= -->
+<div id="tab-windows" class="tab-content">
+  <section class="wrap">
+    <button class="btn-ghost btn-back" onclick="openTab('home')">⬅ Volver a Inicio</button>
+    
+    <!-- BANNER PARA REDIRIGIR A ARMADO DE PC (Solución para móviles) -->
+    <div class="info-box" style="border-color: var(--accent-2); cursor:pointer; background: linear-gradient(45deg, rgba(255,0,77,0.08), transparent); margin-bottom: 30px; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" onclick="openTab('armado')">
+      <h4 style="color: var(--accent-2); font-size: 1.3rem; margin-bottom: 5px;">¿Quieres armar tu propia PC GAMER?</h4>
+      <p>Haz clic aquí para ir a nuestra sección de Ensambles a la Medida y cotizar tu equipo ideal.</p>
+    </div>
+
+    <div class="section-head">
+      <span class="eyebrow">PC y Laptops Windows</span>
+      <h2>Limpieza, Formateo y Actualizaciones</h2>
+    </div>
+
+    <!-- SLIDER WINDOWS -->
+    <div class="ba-slider" id="slider-win">
+      <div class="ba-tag ba-tag-left">Antes (Sucia)</div>
+      <div class="ba-tag ba-tag-right">Después (Limpia)</div>
+      <div class="ba-layer ba-before"><img src="win-antes.jpg" alt="PC Windows Sucia"></div>
+      <div class="ba-layer ba-after"><img src="win-despues.jpg" alt="PC Windows Limpia"></div>
+      <div class="ba-divider"></div>
+      <div class="ba-handle">↔</div>
+      <input type="range" class="ba-range" min="0" max="100" value="50">
+    </div>
+
+    <h3 class="subgroup-title first">Diagnóstico y Limpieza</h3>
+    <div class="grid-3">
+      <div class="price-card" onclick="promptService('Diagnóstico PC Windows')">
+        <span class="tag">Revisión General</span>
+        <h3>Diagnóstico</h3>
+        <div class="price">$100 <small>MXN</small></div>
+        <p class="desc">Revisión integral de componentes y software para detectar la raíz exacta del problema en tu equipo.</p>
+      </div>
+      <div class="price-card featured" onclick="promptService('Limpieza Profunda PC Windows')">
+        <span class="tag">🔥 Más Vendido</span>
+        <h3>Limpieza Profunda + Pasta Térmica</h3>
+        <div class="price">$350 <small>MXN</small></div>
+        <p class="desc">Desensamble total del equipo pieza por pieza.</p>
+        <ul>
+          <li>Limpieza de tarjeta madre y disipadores</li>
+          <li>Cambio de pasta térmica premium</li>
+          <li>Gestión de cables para mejor flujo de aire</li>
+        </ul>
+      </div>
+      <div class="price-card" onclick="promptService('Limpieza + Formateo PC Windows')">
+        <span class="tag">⭐ Paquete Estrella</span>
+        <h3>Limpieza + Pasta + Formateo</h3>
+        <div class="price">$450 <small>MXN</small></div>
+        <p class="desc">Combina el mantenimiento físico extremo con una renovación total del sistema operativo para dejar tu computadora como recién salida de fábrica.</p>
+      </div>
+    </div>
+
+    <h3 class="subgroup-title">Software y Almacenamiento</h3>
+    <div class="grid-3">
+      <div class="price-card" onclick="promptService('Formateo con respaldo Windows')">
+        <span class="tag">Sistema Fresco</span>
+        <h3>Formateo con Respaldo Seguro</h3>
+        <div class="price">$300 <small>MXN</small></div>
+        <ul>
+          <li>Instalación de la versión de Windows más reciente</li>
+          <li>Paquetería Office completamente activada</li>
+          <li>Instalación y actualización de Drivers</li>
+        </ul>
+      </div>
+      <div class="price-card" onclick="promptService('Instalación de Software Windows')">
+        <span class="tag">A Medida</span>
+        <h3>Instalación de Software</h3>
+        <div class="price">$150 <small>MXN</small></div>
+        <p class="desc">Instalamos lo que requieras: paquetería de diseño (Adobe), ingeniería (AutoCAD), librerías de programación, antivirus o utilidades de sistema específicas.</p>
+      </div>
+      <div class="price-card featured" onclick="promptService('Actualización a SSD Windows')">
+        <span class="tag">🚀 Máxima Velocidad</span>
+        <h3>Actualización a Disco SSD</h3>
+        <div class="price">$450 <small>MXN</small></div>
+        <ul>
+          <li>Instalación física de la unidad de estado sólido</li>
+          <li>Instalación de Windows limpia y optimizada</li>
+          <li>Paquetería Office activada y lista</li>
+        </ul>
+        <p class="desc" style="margin-top: 10px; font-size: 0.75rem;">*Nota: El disco SSD se cobra aparte dependiendo de la capacidad.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= PESTAÑA MAC ================= -->
+<div id="tab-mac" class="tab-content">
+  <section class="wrap">
+    <button class="btn-ghost btn-back" onclick="openTab('home')">⬅ Volver a Inicio</button>
+    <div class="section-head">
+      <span class="eyebrow">MacBook e iMac</span>
+      <h2>Servicio Especializado Apple</h2>
+    </div>
+
+    <!-- SLIDER MAC -->
+    <div class="ba-slider" id="slider-mac">
+      <div class="ba-tag ba-tag-left">OS Viejo y Sucia</div>
+      <div class="ba-tag ba-tag-right">OS Reciente e Impecable</div>
+      <div class="ba-layer ba-before"><img src="mac-antes.jpg" alt="Mac OS Antiguo"></div>
+      <div class="ba-layer ba-after"><img src="mac-despues.jpg" alt="Mac OS Nuevo"></div>
+      <div class="ba-divider"></div>
+      <div class="ba-handle">↔</div>
+      <input type="range" class="ba-range" min="0" max="100" value="50">
+    </div>
+
+    <div class="grid-3">
+      <div class="price-card" onclick="promptService('Limpieza Profunda de Mac')">
+        <span class="tag">Mantenimiento Físico</span>
+        <h3>Limpieza Profunda de Mac</h3>
+        <div class="price">$500 <small>MXN</small></div>
+        <p class="desc">Apertura extremadamente cuidadosa. Remoción de polvo en los diminutos ventiladores de Apple y placa lógica para evitar sobrecalentamiento. Cambio de pasta térmica para restaurar la eficiencia del procesador.</p>
+      </div>
+      <div class="price-card" onclick="promptService('Actualización de Sistema Mac')">
+        <span class="tag">Segunda Vida</span>
+        <h3>Actualización de Sistema Operativo</h3>
+        <div class="price">$550 <small>MXN</small></div>
+        <p class="desc">Llevamos los equipos Mac abandonados por el soporte oficial de Apple a versiones mucho más modernas (como macOS Sequoia), permitiéndote instalar aplicaciones recientes.</p>
+      </div>
+      <div class="price-card featured" onclick="promptService('Actualización Mac + Limpieza (Combo)')">
+        <span class="tag">🏆 El Más Elegido</span>
+        <h3>Actualización a OS Reciente + Limpieza</h3>
+        <div class="price">$800 <small>MXN</small></div>
+        <p class="desc">El paquete definitivo para revivir Macs viejas. Incluye el salto a un sistema actual compatible y todo el mantenimiento físico profundo con cambio de pasta térmica incluido.</p>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <h4>Sobre las actualizaciones de Disco Duro (Upgrade SSD) en Mac</h4>
+      <p>Depende completamente del año y modelo: Son actualizables la mayoría de modelos hasta el año 2015 o 2017. Las Macs más recientes (2016+ con USB-C o con procesadores M1, M2, M3) no se pueden actualizar porque el disco de almacenamiento viene soldado a la placa base de fábrica. Pídele al asistente que te cotice con el año de tu equipo.</p>
+    </div>
+  </section>
+</div>
+
+<!-- ================= PESTAÑA CONSOLAS ================= -->
+<div id="tab-consolas" class="tab-content">
+  <section class="wrap">
+    <button class="btn-ghost btn-back" onclick="openTab('home')">⬅ Volver a Inicio</button>
+    <div class="section-head">
+      <span class="eyebrow">PS4 · PS5 · Xbox · Switch</span>
+      <h2>Mantenimiento de Consolas</h2>
+    </div>
+
+    <!-- SLIDER XBOX SERIES X -->
+    <div class="ba-slider" id="slider-xbox">
+      <div class="ba-tag ba-tag-left">Antes (Sucia)</div>
+      <div class="ba-tag ba-tag-right">Después (Limpia)</div>
+      <div class="ba-layer ba-before"><img src="xbox-antes.jpg" alt="Xbox Series X sucia"></div>
+      <div class="ba-layer ba-after"><img src="xbox-despues.jpg" alt="Xbox Series X limpia"></div>
+      <div class="ba-divider"></div>
+      <div class="ba-handle">↔</div>
+      <input type="range" class="ba-range" min="0" max="100" value="50">
+    </div>
+
+    <div class="grid-2" style="margin-top:32px;">
+      <div class="price-card" onclick="promptService('Limpieza de consola')">
+        <span class="tag">Mantenimiento Preventivo</span>
+        <h3>Limpieza de consola</h3>
+        <div class="price">$200 <small>MXN</small></div>
+        <p class="desc">Limpieza estética externa e interna rápida para quitar la acumulación de polvo superficial. Revisión rápida del estado de disipación.</p>
+      </div>
+      <div class="price-card featured" onclick="promptService('Limpieza Profunda + Pasta Térmica Consola')">
+        <span class="tag">🎮 Más Solicitado</span>
+        <h3>Limpieza Profunda + Pasta Térmica</h3>
+        <div class="price">$380 <small>MXN</small></div>
+        <p class="desc">Solución definitiva si tu consola parece turbina de avión o se apaga sola.</p>
+        <ul>
+          <li>Desensamble completo pieza por pieza</li>
+          <li>Limpieza a fondo del disipador principal y ventilador</li>
+          <li>Aplicación de pasta térmica nueva de alto rendimiento (o metal líquido)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= PESTAÑA ARMADO PC ================= -->
+<div id="tab-armado" class="tab-content">
+  
+  <!-- INFINITE MARQUEE (MARCAS GAMER) -->
+  <div class="marquee">
+    <div class="marquee-track">
+      <img src="logo-asus.png" alt="ASUS">
+      <img src="logo-msi.png" alt="MSI">
+      <img src="logo-corsair.png" alt="Corsair">
+      <img src="logo-gskill.png" alt="G.Skill">
+      <img src="logo-nvidia.png" alt="NVIDIA">
+      <img src="logo-amd.png" alt="AMD">
+      <img src="logo-intel.png" alt="Intel">
+      <img src="logo-nzxt.png" alt="NZXT">
+      <img src="logo-aula.png" alt="Aula / Epomaker">
+    </div>
+    
+    <div class="marquee-track" aria-hidden="true">
+      <img src="logo-asus.png" alt="ASUS">
+      <img src="logo-msi.png" alt="MSI">
+      <img src="logo-corsair.png" alt="Corsair">
+      <img src="logo-gskill.png" alt="G.Skill">
+      <img src="logo-nvidia.png" alt="NVIDIA">
+      <img src="logo-amd.png" alt="AMD">
+      <img src="logo-intel.png" alt="Intel">
+      <img src="logo-nzxt.png" alt="NZXT">
+      <img src="logo-aula.png" alt="Aula / Epomaker">
+    </div>
+  </div>
+
+  <section class="wrap" style="padding-top: 0;">
+    <button class="btn-ghost btn-back" onclick="openTab('home')">⬅ Volver a Inicio</button>
+    <div class="section-head">
+      <span class="eyebrow">A la medida de tus necesidades</span>
+      <h2>Armado de PC Custom</h2>
+    </div>
+
+    <!-- LAYOUT DE 2 COLUMNAS (Texto + Imagen) -->
+    <div class="grid-2">
+      <div class="info-box" style="border-color: var(--accent-1); cursor:pointer; transition: transform 0.3s; margin-top: 0; display: flex; flex-direction: column; justify-content: center;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" onclick="promptService('Cotización de Armado de PC')">
+        <h4 style="color: var(--accent-1); font-size: 1.4rem;">Haz clic aquí para cotizar tu ensamble</h4>
+        <p style="margin-top: 10px;">Dinos para qué quieres usar la computadora y cuánto planeas invertir. Nosotros te hacemos una propuesta equilibrada, escogiendo los mejores componentes del mercado para garantizarte FPS altos, temperaturas estables y cero cuellos de botella.</p>
+        <button class="btn-ghost" style="margin-top: 20px; align-self: flex-start; border-color: var(--accent-1);">Abrir Cotizador</button>
+      </div>
+
+      <!-- IMAGEN DE LA COMPU CUSTOM -->
+      <div class="image-box">
+        <img src="pc-armada.jpg" alt="Computadora Gamer Custom Armada">
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= BOTON FLOTANTE Y PANEL DEL ASISTENTE ================= -->
+<button class="fab-bot" id="fabBot" title="Asistente ChipFresco">💬</button>
+
+<div class="bot-panel" id="botPanel">
+  <div class="bot-head"><div><span class="dot"></span>Asistente ChipFresco</div><div class="bot-close" id="botClose">✕</div></div>
+  <div class="bot-msgs" id="botMsgs"></div>
+  <div class="bot-suggestions" id="botSuggestions"></div>
+  <div class="bot-input-row">
+    <input type="text" id="botInput" placeholder="Escribe tu respuesta..." autocomplete="off">
+    <button id="botSend">➤</button>
+  </div>
+</div>
+
+<script>
+  /* ================= LÓGICA DE PESTAÑAS Y TEMAS (SPA) ================= */
+  function openTab(tabId) {
+    document.body.setAttribute('data-theme', tabId);
+    
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.links a').forEach(el => el.classList.remove('active-link'));
+    
+    document.getElementById('tab-' + tabId).classList.add('active');
+    let navLink = document.getElementById('nav-' + tabId);
+    if(navLink) navLink.classList.add('active-link');
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ================= INICIALIZACIÓN DE SLIDERS ================= */
+  function initSlider(sliderId) {
+    const root = document.getElementById(sliderId);
+    if(!root) return;
+    const range = root.querySelector('.ba-range');
+    const before = root.querySelector('.ba-before');
+    const after = root.querySelector('.ba-after');
+    const divider = root.querySelector('.ba-divider');
+    const handle = root.querySelector('.ba-handle');
+    
+    function update(v) {
+      before.style.clipPath = `inset(0 ${100-v}% 0 0)`;
+      after.style.clipPath  = `inset(0 0 0 ${v}%)`;
+      divider.style.left = v + '%';
+      handle.style.left = v + '%';
+    }
+    range.addEventListener('input', e => update(e.target.value));
+    update(range.value);
+  }
+  
+  initSlider('slider-win');
+  initSlider('slider-mac');
+  initSlider('slider-xbox');
+
+  /* ================= LÓGICA DEL MODAL DE SERVICIOS ================= */
+  let selectedService = "";
+  const WHATSAPP_NUMBER = "5216623800032";
+
+  function promptService(serviceName) {
+    selectedService = serviceName;
+    document.getElementById('modal-service-display').innerText = serviceName;
+    document.getElementById('service-modal').classList.add('active');
+  }
+
+  function closeModal() {
+    document.getElementById('service-modal').classList.remove('active');
+  }
+
+  function sendServiceWa() {
+    const msg = `Hola Aníbal, estoy interesado en el servicio de: ${selectedService}. ¿Podemos agendar?`;
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+    closeModal();
+  }
+
+  /* FIX: Ahora forzamos el reinicio total del bot al abrirlo desde un servicio */
+  function openServiceBot() {
+    closeModal();
+    const panel = document.getElementById('botPanel');
+    panel.classList.add('open');
+    botFlow(selectedService);
+  }
+
+  /* ================= LÓGICA DEL ASISTENTE VIRTUAL ================= */
+  const panel = document.getElementById('botPanel');
+  const msgsEl = document.getElementById('botMsgs');
+  const suggEl = document.getElementById('botSuggestions');
+  const inputEl = document.getElementById('botInput');
+  
+  let botState = 'init'; 
+  let userData = {}; // Se inicializa vacío, se resetea en botFlow
+  
+  function addBotMsg(text) {
+    const d = document.createElement('div'); d.className = 'msg bot'; d.textContent = text;
+    msgsEl.appendChild(d); msgsEl.scrollTop = msgsEl.scrollHeight;
+  }
+  function addUserMsg(text) {
+    const d = document.createElement('div'); d.className = 'msg user'; d.textContent = text;
+    msgsEl.appendChild(d); msgsEl.scrollTop = msgsEl.scrollHeight;
+  }
+  function setChips(chips) {
+    suggEl.innerHTML = '';
+    chips.forEach(chip => {
+      const b = document.createElement('button'); b.className = 'chip-btn'; 
+      b.textContent = chip.label; b.onclick = chip.fn;
+      suggEl.appendChild(b);
+    });
+  }
+  function clearChips() { suggEl.innerHTML = ''; }
+
+  /* FIX: Reinicio total de variables al empezar un flujo nuevo */
+  function botFlow(preSelectedService = null) {
+    msgsEl.innerHTML = ''; 
+    userData = { nombre: '', equipo: '', servicio: '', puntoEncuentro: '', horario: '' };
+    
+    addBotMsg("¡Hola! Soy Aníbal, el técnico de ChipFresco. Para poder ayudarte mejor, ¿Me podrías decir tu nombre?");
+    botState = 'esperando_nombre';
+    
+    if (preSelectedService) {
+      userData.servicio = preSelectedService;
+    }
+    
+    inputEl.disabled = false; 
+    inputEl.placeholder = "Escribe tu nombre...";
+    inputEl.focus();
+  }
+
+  function ubicacionHermosillo(esLocal) {
+    clearChips();
+    addUserMsg(esLocal ? 'Sí' : 'No');
+    
+    if (!esLocal) {
+      setTimeout(() => {
+        addBotMsg("Lo siento, actualmente estamos limitados al área de Hermosillo, Sonora. 🌵");
+        botState = 'end';
+        inputEl.disabled = true;
+        inputEl.placeholder = "Servicio no disponible en tu zona.";
+      }, 400);
+    } else {
+      if (userData.servicio) {
+         userData.equipo = "Equipo especificado en el servicio";
+         setTimeout(() => {
+           addBotMsg(`Perfecto. Vi que seleccionaste el servicio: "${userData.servicio}".`);
+           explicarHorarios();
+         }, 400);
+      } else {
+        setTimeout(() => {
+          addBotMsg("Perfecto. Ahora dime, ¿Para qué tipo de equipo necesitas ayuda?");
+          botState = 'esperando_equipo';
+          inputEl.disabled = true;
+          inputEl.placeholder = "Selecciona una opción arriba 👆";
+          setChips([
+            { label: 'Mac / MacBook', fn: () => selectEquipo('Mac / MacBook') },
+            { label: 'Laptop Windows', fn: () => selectEquipo('Laptop Windows') },
+            { label: 'PC de Escritorio', fn: () => selectEquipo('PC de Escritorio') },
+            { label: 'Consola', fn: () => selectEquipo('Consola') },
+            { label: 'Armado PC', fn: () => selectEquipo('Armado de PC Nuevo') }
+          ]);
+        }, 400);
+      }
+    }
+  }
+
+  function handleUserInput(text) {
+    if (!text.trim()) return;
+    addUserMsg(text);
+    inputEl.value = '';
+
+    if (botState === 'esperando_nombre') {
+      userData.nombre = text;
+      setTimeout(() => {
+        addBotMsg(`Mucho gusto ${userData.nombre}. Para confirmar cobertura, ¿te encuentras en Hermosillo, Sonora?`);
+        botState = 'esperando_ubicacion';
+        inputEl.disabled = true;
+        inputEl.placeholder = "Selecciona una opción arriba 👆";
+        setChips([
+          { label: 'Sí, soy de Hermosillo', fn: () => ubicacionHermosillo(true) },
+          { label: 'No, soy de fuera', fn: () => ubicacionHermosillo(false) }
+        ]);
+      }, 400);
+    } 
+    else if (botState === 'esperando_servicio') {
+      userData.servicio = text;
+      explicarHorarios();
+    }
+  }
+
+  function selectEquipo(equipoStr) {
+    addUserMsg(equipoStr);
+    userData.equipo = equipoStr;
+    clearChips();
+    inputEl.disabled = false;
+    inputEl.placeholder = "Escribe tu respuesta...";
+    setTimeout(() => {
+      addBotMsg(`Entendido. ¿Qué tipo de trabajo necesitas que le hagamos a tu ${equipoStr}?`);
+      botState = 'esperando_servicio';
+    }, 400);
+  }
+
+  function explicarHorarios() {
+    botState = 'explicando_horarios';
+    setTimeout(() => {
+      addBotMsg(`Tomo nota.\n\nTe explico nuestros horarios:\n🔹 Lun y Mar: Todo el día (9:00 AM a 5:00 PM).\n🔹 Mié a Dom: Recolección después de las 4:30 PM. Entrega al día siguiente a las 6:00 PM.\n\nSabiendo esto, ¿qué día prefieres?`);
+      inputEl.disabled = false;
+      inputEl.placeholder = "Escribe tu preferencia de día...";
+      inputEl.focus();
+      botState = 'esperando_horario';
+    }, 500);
+  }
+
+  const originalHandler = handleUserInput;
+  function interceptInput(text) {
+    if (botState === 'esperando_horario') {
+      addUserMsg(text);
+      inputEl.value = '';
+      userData.horario = text;
+      setTimeout(() => {
+        addBotMsg("IMPORTANTE: Las recolecciones y entregas se hacen **Únicamente en punto medio**.\n\nTenemos dos opciones. ¿Cuál te queda mejor?");
+        inputEl.disabled = true;
+        inputEl.placeholder = "Selecciona un punto medio 👇";
+        setChips([
+          { label: 'Walmart Solidaridad Reforma', fn: () => finalizarFlujo('Walmart Solidaridad Reforma') },
+          { label: 'Unison', fn: () => finalizarFlujo('Unison') }
+        ]);
+      }, 500);
+    } else {
+      originalHandler(text);
+    }
+  }
+
+  function finalizarFlujo(punto) {
+    addUserMsg(punto);
+    userData.puntoEncuentro = punto;
+    clearChips();
+    setTimeout(() => {
+      addBotMsg("¡Todo listo! Toca el botón de abajo para enviarme este resumen directo a mi WhatsApp y confirmar tu cita.");
+      
+      const resumen = `¡Hola Aníbal! Quiero confirmar una cita 🛠️\n\n` +
+                      `👤 Nombre: ${userData.nombre}\n` +
+                      `🔧 Servicio: ${userData.servicio}\n` +
+                      `⏰ Día/Hora: ${userData.horario}\n` +
+                      `🤝 Punto de Encuentro: ${userData.puntoEncuentro}`;
+      
+      const btnLink = document.createElement('a');
+      btnLink.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(resumen)}`;
+      btnLink.target = '_blank';
+      btnLink.className = 'chip-confirm';
+      btnLink.textContent = 'Confirmar por WhatsApp ✅';
+      msgsEl.appendChild(btnLink);
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+      
+      botState = 'init';
+    }, 600);
+  }
+
+  document.getElementById('fabBot').addEventListener('click', () => {
+    panel.classList.toggle('open');
+    if(panel.classList.contains('open') && botState === 'init') botFlow();
+  });
+  document.getElementById('botClose').addEventListener('click', () => panel.classList.remove('open'));
+  document.getElementById('botSend').addEventListener('click', () => interceptInput(inputEl.value));
+  inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') interceptInput(inputEl.value); });
+
+</script>
+</body>
+</html>
