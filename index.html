@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ChipFresco · Cómputo, Mac y consolas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* Fondo principal ultra oscuro, sin grises */
+    --bg: #09090E; --bg-elevated: #111116; --card: #101016; --surface: #151520;
+    
+    /* Gradientes principales súper vibrantes y pop (Corregido a Amarillo/Naranja para el Home) */
+    --accent-1: #FFD700; /* Amarillo brillante */
+    --accent-2: #FF6A00; /* Naranja intenso */
+    --accent-glow: rgba(255, 106, 0, 0.25);
+    
+    /* Textos mucho más claros y brillantes */
+    --text-main: #FFFFFF; --text-muted: #F8FAFC; --text-dim: #CBD5E1;
+    
+    --wa: #25D366; --wa-deep: #128C7E;
+    --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --radius-sm: 12px; --radius-md: 18px; --radius-lg: 24px; --radius-xl: 32px;
+    
+    --transition-snappy: 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    --transition-smooth: 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  
+  /* Colores ultra vibrantes (Cero grises, pura saturación elegante) */
+  body[data-theme="windows"] {
+    --bg: #020617; --bg-elevated: #0B162C; --card: #091223; --surface: #0E1D3A;
+    --accent-1: #0066FF; --accent-2: #00B4FF; --accent-glow: rgba(0,102,255,0.3);
+  }
+  body[data-theme="mac"] {
+    --bg: #000000; --bg-elevated: #111111; --card: #0A0A0A; --surface: #1A1A1A;
+    --accent-1: #FFFFFF; --accent-2: #888888; --accent-glow: rgba(255,255,255,0.15);
+  }
+  body[data-theme="consolas"] {
+    /* Degradado verde vibrante metálico */
+    --bg: #010A05; --bg-elevated: #051A0D; --card: #031409; --surface: #082614;
+    --accent-1: #00FF66; --accent-2: #00A344; --accent-glow: rgba(0,255,102,0.25);
+  }
+  body[data-theme="armado"] {
+    --bg: #0A0002; --bg-elevated: #1C0509; --card: #140205; --surface: #2B0810;
+    --accent-1: #FF003C; --accent-2: #FF5E00; --accent-glow: rgba(255,0,60,0.3);
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+  body {
+    background: var(--bg); color: var(--text-main); font-family: var(--font-body);
+    line-height: 1.6; overflow-x: hidden;
+    transition: background-color 0.8s ease, color 0.8s ease;
+    min-height: 100vh; position: relative;
+    letter-spacing: -0.01em;
+  }
+  
+  .reveal {
+    opacity: 0; filter: blur(12px); transform: translateY(20px) scale(0.96);
+    animation: creativeReveal 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+  .d-1 { animation-delay: 0.1s; } .d-2 { animation-delay: 0.2s; }
+  .d-3 { animation-delay: 0.3s; } .d-4 { animation-delay: 0.4s; }
+  
+  @keyframes creativeReveal { to { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); } }
+
+  .ambient-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .ambient-orb {
+    position: absolute; border-radius: 50%; filter: blur(140px); opacity: 0.08;
+    transition: all 1.2s ease; animation: orbFloat 20s ease-in-out infinite;
+  }
+  .ambient-orb:nth-child(1) { width: 600px; height: 600px; background: var(--accent-1); top: -10%; left: -10%; animation-delay: 0s; }
+  .ambient-orb:nth-child(2) { width: 500px; height: 500px; background: var(--accent-2); bottom: -10%; right: -5%; animation-delay: -7s; }
+  @keyframes orbFloat {
+    0%,100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(40px,-30px) scale(1.1); }
+    66% { transform: translate(-30px,20px) scale(0.95); }
+  }
+  
+  h1,h2,h3,h4,.brand-text { font-family: var(--font-display); letter-spacing: -0.03em; }
+  a { color: inherit; text-decoration: none; }
+  section { padding: 80px 0; position: relative; z-index: 2; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  img,svg { max-width: 100%; }
+  
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+  .tab-content { display: none; padding-bottom: 120px; }
+  .tab-content.active { display: block; }
+
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(9,9,14,0.6);
+    backdrop-filter: blur(25px) saturate(1.5); -webkit-backdrop-filter: blur(25px) saturate(1.5);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: all 0.6s ease;
+  }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; gap: 20px; max-width: 1100px; margin: 0 auto; }
+  .brand { display: flex; align-items: center; gap: 14px; flex-shrink: 0; cursor: pointer; transition: transform var(--transition-snappy); }
+  .brand:hover { transform: scale(1.05); }
+  .brand svg { height: 42px; width: auto; filter: drop-shadow(0 0 15px var(--accent-glow)); transition: filter 0.4s ease; }
+  .brand-text { font-weight: 800; font-size: 1.45rem; }
+  /* Degradado limpio de Izquierda (Naranja) a Derecha (Amarillo) */
+  .brand-text span { background: linear-gradient(to right, var(--accent-2), var(--accent-1)); -webkit-background-clip: text; background-clip: text; color: transparent; transition: 0.6s; }
+  
+  nav .links { display: flex; gap: 8px; font-size: 0.95rem; color: var(--text-dim); white-space: nowrap; }
+  nav .links a { cursor: pointer; transition: all 0.3s ease; padding: 8px 18px; border-radius: 999px; font-weight: 500; }
+  nav .links a:hover { color: var(--text-main); background: rgba(255,255,255,0.08); }
+  nav .links a.active-link { color: var(--bg); background: linear-gradient(135deg,var(--accent-1),var(--accent-2)); font-weight: 700; box-shadow: 0 4px 20px var(--accent-glow); }
+
+  .btn-wa {
+    display: inline-flex; align-items: center; gap: 8px; background: var(--wa); color: #000;
+    font-weight: 800; font-size: 0.95rem; padding: 12px 26px; border-radius: 999px;
+    text-decoration: none; white-space: nowrap; box-shadow: 0 0 30px rgba(37,211,102,0.4);
+    cursor: pointer; border: none; font-family: var(--font-body); transition: all var(--transition-snappy);
+  }
+  .btn-wa:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 0 45px rgba(37,211,102,0.6); background: #2CE06E; }
+  
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.2); color: var(--text-main);
+    background: transparent; padding: 12px 26px; border-radius: 999px;
+    text-decoration: none; font-weight: 600; font-size: 0.95rem; font-family: var(--font-body);
+    transition: all var(--transition-snappy);
+  }
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+  
+  .btn-back { margin-bottom: 30px; display: inline-flex; color: var(--text-dim); border-color: rgba(255,255,255,0.1); font-size: 0.85rem; }
+  .btn-back:hover { background: rgba(255,255,255,0.08); color: var(--text-main); box-shadow: none; transform: translateY(-2px); border-color: rgba(255,255,255,0.2); }
+  
+  @media (max-width:900px) { nav .links { display: none; } .brand-text { font-size: 1.2rem; } }
+
+  .hero { position: relative; padding: 80px 0 60px; overflow: hidden; }
+  .hero .wrap { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent-1); border: 1px solid var(--accent-2); padding: 8px 24px; border-radius: 999px; margin-bottom: 28px;
+    font-weight: 800; background: rgba(255,255,255,0.03); box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+  
+  .hero h1 { font-size: clamp(2.5rem,5vw,4.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 24px; max-width: 900px; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+  
+  /* Degradado del texto ahora sin sombra oscura intrusiva para verse brillante y nítido */
+  .hero h1 em { 
+    font-style: normal; 
+    background: linear-gradient(to right, var(--accent-2), var(--accent-1)); 
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    color: transparent; 
+    -webkit-text-fill-color: transparent;
+    text-shadow: none; 
+    filter: drop-shadow(0 0 15px rgba(255, 106, 0, 0.3)); 
+  }
+
+  .hero p.lead { color: var(--text-muted); font-size: clamp(1.1rem,2vw,1.3rem); max-width: 60ch; margin-bottom: 24px; line-height: 1.7; font-weight: 500; }
+
+  /* Bloque Calor de Hermosillo - Calco de la imagen con margen superior ajustado */
+  .hero-text-block {
+    max-width: 800px; margin: 60px auto 40px; background: #111116;
+    padding: 28px 40px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.04);
+    text-align: center; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  }
+  .hero-text-block::before {
+    content: ''; position: absolute; left: -1px; top: 15%; bottom: 15%; width: 4px;
+    background: linear-gradient(to bottom, var(--accent-1), var(--accent-2)); border-radius: 4px;
+  }
+  .hero-text-block p { font-size: 1.1rem; color: var(--text-muted); font-weight: 500; line-height: 1.8; }
+  .hero-text-block strong { color: var(--text-main); font-weight: 700; font-size: 1.15rem; }
+
+  /* ================= MENUS PRINCIPALES (Animación Orgánica y Vibrante) ================= */
+  .type-selector { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; width: 100%; max-width: 950px; margin-top: 20px; }
+  @media (max-width:768px) { .type-selector { grid-template-columns: 1fr; gap: 20px; } }
+
+  .type-card {
+    background: var(--card); 
+    border-radius: var(--radius-lg);
+    /* Mayor padding inferior (65px) para que el texto no toque la flecha */
+    padding: 40px 20px 65px; 
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+    cursor: pointer; position: relative; z-index: 1; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all var(--transition-snappy);
+  }
+  
+  /* Gradiente Líquido sin morados. Empieza con un naranja muy vibrante. */
+  .type-card::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(135deg, #FF3D00, var(--accent-2), var(--accent-1), var(--accent-2));
+    background-size: 300% 300%;
+    animation: organicGradient 4s ease infinite alternate;
+    opacity: 0; transition: opacity var(--transition-smooth);
+  }
+  
+  @keyframes organicGradient { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
+  .type-card:hover { 
+    transform: translateY(-8px) scale(1.03); 
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+    border-color: transparent;
+  }
+  .type-card:hover::before { opacity: 1; }
+  
+  .type-card svg { width: 64px; height: 64px; fill: var(--text-main); transition: all var(--transition-snappy); opacity: 0.9; }
+  .type-card h3 { font-size: 1.3rem; font-weight: 800; color: var(--text-main); transition: all var(--transition-snappy); text-align: center; line-height: 1.3; }
+  
+  /* Sombras fuertes para legibilidad perfecta sobre degradados claros */
+  .type-card:hover svg { fill: #FFFFFF; transform: scale(1.1) translateY(-4px); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6)); opacity: 1; }
+  .type-card:hover h3 { color: #FFFFFF; text-shadow: 0 2px 12px rgba(0,0,0,0.7); }
+
+  /* Botón flecha calcado y ubicado de forma segura en la esquina libre */
+  .type-card .card-arrow { 
+    position: absolute; bottom: 15px; right: 15px; width: 40px; height: 40px; border-radius: 50%; 
+    background: rgba(255,255,255,0.2); backdrop-filter: blur(5px);
+    display: flex; align-items: center; justify-content: center; 
+    opacity: 0; transform: translateX(-15px); transition: all var(--transition-snappy); 
+    font-size: 1.2rem; color: #fff; font-weight: bold; border: 1px solid rgba(255,255,255,0.3);
+  }
+  .type-card:hover .card-arrow { opacity: 1; transform: translateX(0); box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+
+  /* ================= PRECIOS Y SERVICIOS INTERNOS ================= */
+  .section-head { max-width: 60ch; margin-bottom: 48px; }
+  .section-head h2 { font-size: clamp(2rem,4vw,3.2rem); font-weight: 800; margin-top: 12px; line-height: 1.1; letter-spacing: -0.04em; text-shadow: 0 4px 20px rgba(0,0,0,0.6); }
+  
+  .subgroup-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; margin: 50px 0 20px; display: flex; align-items: center; gap: 12px; color: var(--text-main); text-shadow: 0 2px 10px rgba(0,0,0,0.4); }
+  .subgroup-title::before { content: ''; width: 32px; height: 4px; background: linear-gradient(90deg,var(--accent-1),var(--accent-2)); display: inline-block; border-radius: 4px; box-shadow: 0 0 10px var(--accent-glow); }
+  
+  .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 24px; align-items: stretch; }
+  @media (max-width:860px) { .grid-3 { grid-template-columns: 1fr; } }
+  @media (max-width:720px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .price-card, .info-box {
+    background: var(--card); border-radius: var(--radius-md); 
+    border: 1px solid rgba(255,255,255,0.08); 
+    position: relative; z-index: 1; cursor: pointer; overflow: hidden;
+    transition: all var(--transition-snappy);
+  }
+  .price-card { padding: 36px 32px; display: flex; flex-direction: column; gap: 14px; }
+  .info-box { padding: 36px; }
+
+  /* Degradado metálico/vibrante interno */
+  .price-card::before, .info-box::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    opacity: 0; transition: opacity var(--transition-snappy);
+  }
+
+  .price-card:hover, .info-box:hover { 
+    transform: translateY(-8px) scale(1.02); 
+    box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 30px var(--accent-glow);
+    border-color: transparent;
+  }
+  .price-card:hover::before, .info-box:hover::before { opacity: 0.95; }
+
+  .price-card h3 { font-size: 1.35rem; font-weight: 800; line-height: 1.35; position: relative; z-index: 1; transition: all var(--transition-snappy); text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+  .price-card .tag { font-size: 0.75rem; color: var(--accent-2); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 800; position: relative; z-index: 1; transition: color var(--transition-snappy); text-shadow: 0 0 10px var(--accent-glow); }
+  .price-card .price { font-family: var(--font-display); font-size: 2.3rem; font-weight: 800; color: var(--accent-1); margin: 6px 0; position: relative; z-index: 1; text-shadow: 0 0 20px var(--accent-glow); transition: all var(--transition-snappy); }
+  .price-card .price small { font-size: 0.95rem; font-weight: 700; opacity: 0.8; }
+  
+  /* Legibilidad en hover: Blanco sólido con sombra negra difuminada */
+  .price-card:hover h3, .price-card:hover .price, .price-card:hover .tag { color: #ffffff; text-shadow: 0 2px 12px rgba(0,0,0,0.6); transform: scale(1.02) translateX(2px); }
+  
+  .price-card p.desc, .price-card ul { color: var(--text-muted); font-size: 1rem; font-weight: 500; line-height: 1.6; position: relative; z-index: 1; transition: color var(--transition-snappy); }
+  .price-card ul { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+  .price-card ul li { display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+  .price-card ul li::before { content: "✓"; color: var(--accent-1); font-weight: bold; flex-shrink: 0; margin-top: 1px; transition: color var(--transition-snappy); text-shadow: 0 0 10px var(--accent-glow); }
+  
+  .price-card:hover p.desc, .price-card:hover ul, .price-card:hover ul li::before { color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+
+  .info-box h4 { margin-bottom: 12px; color: var(--accent-1); font-size: 1.4rem; font-weight: 800; position: relative; z-index: 1; transition: color var(--transition-snappy); text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+  .info-box p { font-size: 1.05rem; color: var(--text-muted); font-weight: 500; line-height: 1.7; position: relative; z-index: 1; transition: color var(--transition-snappy); }
+  .info-box:hover h4, .info-box:hover p { color: #ffffff; text-shadow: 0 2px 12px rgba(0,0,0,0.6); }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    z-index: 100; display: none; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.4s ease; padding: 20px;
+  }
+  .modal-overlay.active { display: flex; opacity: 1; }
+  .modal-box {
+    background: var(--card); padding: 40px; border-radius: var(--radius-xl);
+    max-width: 440px; width: 100%; text-align: center;
+    border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 40px 100px rgba(0,0,0,0.9);
+    transform: scale(0.95) translateY(20px); transition: transform var(--transition-snappy);
+    position: relative; overflow: hidden;
+  }
+  .modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
+  .modal-box h3 { margin-bottom: 14px; font-size: 1.6rem; font-weight: 800; }
+  .modal-box p { color: var(--text-muted); margin-bottom: 32px; font-size: 1.05rem; line-height: 1.6; }
+  .modal-service-name { color: var(--accent-1); font-weight: 800; display: block; margin: 12px 0; font-size: 1.3rem; text-shadow: 0 0 25px var(--accent-glow); }
+  .modal-buttons { display: flex; flex-direction: column; gap: 14px; }
+
+  /* Imagen Armado */
+  .image-box { border-radius: var(--radius-lg); overflow: hidden; border: 2px solid rgba(255,255,255,0.08); position: relative; z-index: 1; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+  .image-box img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform var(--transition-snappy); }
+  .image-box:hover img { transform: scale(1.05); }
+
+  /* Sliders */
+  .ba-slider {
+    position: relative; margin: 40px auto; max-width: 550px; border-radius: var(--radius-lg);
+    overflow: hidden; border: 2px solid rgba(255,255,255,0.1); aspect-ratio: 1 / 1; box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+  }
+  .ba-layer { position: absolute; inset: 0; overflow: hidden; }
+  .ba-layer img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ba-divider { position: absolute; top: 0; bottom: 0; width: 3px; background: rgba(255,255,255,0.95); pointer-events: none; z-index: 2; transform: translateX(-50%); box-shadow: 0 0 15px rgba(255,255,255,0.6); }
+  .ba-handle { position: absolute; top: 50%; width: 40px; height: 40px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; color: var(--bg); transform: translate(-50%,-50%); pointer-events: none; z-index: 3; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: transform var(--transition-snappy); }
+  .ba-handle::before, .ba-handle::after { content: ''; position: absolute; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+  .ba-handle::before { border-right: 6px solid var(--bg); left: 8px; }
+  .ba-handle::after { border-left: 6px solid var(--bg); right: 8px; }
+  .ba-slider:hover .ba-handle { transform: translate(-50%,-50%) scale(1.2); }
+  .ba-range { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; z-index: 4; }
+
+  /* Marquee */
+  .marquee { display: flex; overflow: hidden; background: var(--bg-elevated); padding: 45px 0; border-top: 1px solid rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.03); margin-bottom: 40px; position: relative; z-index: 2; }
+  .marquee::before,.marquee::after { content: ''; position: absolute; top: 0; width: 150px; height: 100%; z-index: 2; pointer-events: none; }
+  .marquee::before { left: 0; background: linear-gradient(90deg,var(--bg-elevated),transparent); }
+  .marquee::after { right: 0; background: linear-gradient(-90deg,var(--bg-elevated),transparent); }
+  .marquee-track { display: flex; align-items: center; justify-content: space-around; flex-shrink: 0; min-width: 100%; gap: 70px; padding-right: 70px; animation: scroll-marquee 30s linear infinite; }
+  .marquee-track img { width: 130px; height: 48px; object-fit: contain; filter: grayscale(100%) opacity(0.4); transition: all 0.4s ease; }
+  .marquee-track img:hover { filter: grayscale(0%) opacity(1); transform: scale(1.15); }
+  @keyframes scroll-marquee { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+
+  /* ================= ILUSTRACIONES DECORATIVAS HOME ================= */
+  .home-features {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    width: 100%; max-width: 1000px; margin: 20px auto 40px;
+  }
+  .feature-card {
+    border: 1px solid rgba(255, 170, 0, 0.4); border-radius: var(--radius-md);
+    padding: 18px 20px; display: flex; align-items: center; gap: 14px;
+    background: rgba(255, 255, 255, 0.02); text-align: left;
+    transition: all var(--transition-snappy);
+  }
+  .feature-card:hover {
+    background: rgba(255, 170, 0, 0.06); transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(255, 170, 0, 0.15); border-color: rgba(255, 170, 0, 0.8);
+  }
+  .feature-card svg {
+    width: 28px; height: 28px; fill: none; stroke: var(--accent-1);
+    stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0;
+  }
+  .feature-card div { font-size: 0.95rem; color: var(--text-dim); line-height: 1.3; }
+  .feature-card strong { color: var(--text-main); font-weight: 600; display: block; margin-bottom: 2px; }
+  
+  @media (max-width: 900px) { .home-features { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .home-features { grid-template-columns: 1fr; } }
+
+  /* ================= CHATBOT (Diseño Pop y Animado) ================= */
+  .fab-bot {
+    position: fixed; bottom: 32px; right: 32px; z-index: 80; width: 72px; height: 72px;
+    border-radius: 50%; background: linear-gradient(135deg,var(--accent-1),var(--accent-2));
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    font-size: 2rem; box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 35px var(--accent-glow);
+    border: none; transition: all var(--transition-snappy); animation: fabPulse 3s ease infinite;
+  }
+  @keyframes fabPulse {
+    0%,100% { box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 35px var(--accent-glow); }
+    50% { box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 55px var(--accent-glow); }
+  }
+  .fab-bot:hover { transform: scale(1.1) rotate(5deg); }
+  .fab-bot:active { transform: scale(0.95); }
+
+  .bot-panel {
+    position: fixed; bottom: 120px; right: 32px; z-index: 90; width: 420px;
+    height: 70vh; max-height: 650px; min-height: 400px;
+    background: rgba(12,12,18,0.95); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-xl);
+    display: none; flex-direction: column; overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.9);
+    backdrop-filter: blur(30px) saturate(1.2); -webkit-backdrop-filter: blur(30px) saturate(1.2);
+    opacity: 0; transform: scale(0.9) translateY(40px);
+    transition: opacity 0.4s var(--transition-snappy), transform 0.4s var(--transition-snappy);
+    transform-origin: bottom right;
+  }
+  .bot-panel.open { display: flex; opacity: 1; transform: scale(1) translateY(0); }
+  
+  .bot-head { padding: 22px 26px; background: rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+  
+  /* Texto degradado animado en el panel */
+  .bot-head-title {
+    font-family: var(--font-display); font-weight: 800; font-size: 1.1rem;
+    background: linear-gradient(135deg, var(--accent-2), var(--accent-1));
+    -webkit-background-clip: text; color: transparent;
+    display: flex; align-items: center; text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
+  
+  .bot-head-title span.dot { width: 10px; height: 10px; background: var(--accent-1); border-radius: 50%; display: inline-block; margin-right: 12px; box-shadow: 0 0 15px var(--accent-glow); animation: dotPulse 2s ease infinite; }
+  .bot-close { cursor: pointer; color: var(--text-muted); font-size: 1.3rem; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all var(--transition-snappy); background: rgba(255,255,255,0.05); }
+  .bot-close:hover { background: rgba(255,255,255,0.15); color: #fff; transform: scale(1.1); }
+  
+  .bot-msgs { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 24px; display: flex; flex-direction: column; gap: 16px; font-size: 0.95rem; scroll-behavior: smooth; }
+  .msg { padding: 14px 18px; border-radius: 18px; max-width: 85%; line-height: 1.55; white-space: pre-line; word-wrap: break-word; animation: msgPop 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; position: relative; opacity: 0; transform: scale(0.9) translateY(10px); }
+  @keyframes msgPop { to { opacity: 1; transform: scale(1) translateY(0); } }
+  .msg.bot { background: var(--bg-elevated); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+  .msg.user { background: linear-gradient(135deg,var(--accent-1),var(--accent-2)); color: #fff; font-weight: 500; align-self: flex-end; border-bottom-right-radius: 4px; text-shadow: 0 1px 3px rgba(0,0,0,0.3); box-shadow: 0 4px 20px var(--accent-glow); }
+  
+  .bot-suggestions { display: flex; flex-wrap: wrap; gap: 10px; padding: 18px 22px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(255,255,255,0.01); flex-shrink: 0; max-height: 150px; overflow-y: auto; }
+  .chip-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: var(--text-main); font-size: 0.9rem; padding: 10px 18px; border-radius: 999px; cursor: pointer; font-family: var(--font-body); transition: all var(--transition-snappy); font-weight: 600; }
+  .chip-btn:hover { background: linear-gradient(135deg,var(--accent-1),var(--accent-2)); color: #fff; border-color: transparent; transform: translateY(-3px) scale(1.05); box-shadow: 0 6px 20px var(--accent-glow); }
+  
+  .chip-confirm { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--wa); color: #000; font-weight: 800; padding: 16px 20px; border-radius: 16px; text-decoration: none; font-size: 0.95rem; margin-top: 8px; cursor: pointer; border: none; box-shadow: 0 0 25px rgba(37,211,102,0.3); transition: all var(--transition-snappy); animation: msgPop 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; font-family: var(--font-body); }
+  .chip-confirm:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 0 35px rgba(37,211,102,0.5); background: #2CE06E; }
+  
+  .bot-input-row { display: flex; gap: 12px; padding: 18px 22px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(255,255,255,0.01); flex-shrink: 0; position: relative; }
+  .bot-input-row input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 14px 18px; color: var(--text-main); font-family: var(--font-body); font-size: 0.95rem; outline: none; transition: all 0.3s ease; }
+  .bot-input-row input:focus { border-color: var(--accent-1); background: rgba(255,255,255,0.08); box-shadow: 0 0 0 4px var(--accent-glow); }
+  .bot-input-row input::placeholder { color: var(--text-dim); }
+  .bot-input-row button { background: linear-gradient(135deg,var(--accent-1),var(--accent-2)); border: none; color: #fff; font-weight: 800; padding: 0 22px; border-radius: 16px; cursor: pointer; font-size: 1.2rem; transition: all var(--transition-snappy); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px var(--accent-glow); }
+  .bot-input-row button:hover { transform: scale(1.1); box-shadow: 0 8px 30px var(--accent-glow); }
+  .bot-input-row button:active { transform: scale(0.95); }
+
+  @media (max-width:640px) {
+    .fab-bot { width: 64px; height: 64px; bottom: 20px; right: 20px; font-size: 1.6rem; }
+    .bot-panel { bottom: 95px; right: 16px; left: 16px; width: calc(100% - 32px); max-width: 100%; height: 78vh; border-radius: var(--radius-xl); transform-origin: bottom center; }
+  }
+
+  .sound-toggle { position: fixed; bottom: 32px; left: 32px; z-index: 70; width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; transition: all var(--transition-snappy); backdrop-filter: blur(10px); }
+  .sound-toggle:hover { background: rgba(255,255,255,0.15); color: #fff; transform: scale(1.15); box-shadow: 0 8px 25px rgba(0,0,0,0.4); }
+  .sound-toggle.muted { opacity: 0.5; filter: grayscale(1); }
+  @media (max-width:640px) { .sound-toggle { bottom: 20px; left: 20px; width: 48px; height: 48px; } }
+</style>
+</head>
+<body data-theme="home">
+
+<div class="ambient-bg"><div class="ambient-orb"></div><div class="ambient-orb"></div></div>
+<div class="noise-overlay"></div>
+<button class="sound-toggle" id="soundToggle" title="Activar/Desactivar sonidos">🔊</button>
+
+<div class="modal-overlay" id="service-modal">
+  <div class="modal-box">
+    <h3>¿Iniciar solicitud?</h3>
+    <p>Has seleccionado:<span class="modal-service-name" id="modal-service-display">Servicio</span>¿Cómo prefieres contactarnos para agendar?</p>
+    <div class="modal-buttons">
+      <button class="btn-wa" onclick="sendServiceWa(); playSound('success');" style="width:100%;justify-content:center;">Contactar por WhatsApp</button>
+      <button class="btn-ghost" onclick="openServiceBot(); playSound('click');" style="width:100%;justify-content:center;">Hablar con el Asistente Virtual</button>
+      <button class="btn-ghost btn-back" onclick="closeModal(); playSound('click');" style="width:100%;justify-content:center;margin-bottom:0;">Volver atrás</button>
+    </div>
+  </div>
+</div>
+
+<header>
+  <nav>
+    <div class="brand" onclick="openTab('home'); playSound('click');">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="logoGrad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="var(--accent-2)"/><stop offset="100%" stop-color="var(--accent-1)"/></linearGradient></defs>
+        <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" fill="none" stroke="url(#logoGrad)" stroke-width="7" stroke-linejoin="round"/>
+        <path d="M50 25 V75 M30 40 L70 60 M30 60 L70 40" stroke="url(#logoGrad)" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="50" cy="50" r="14" fill="var(--bg-elevated)" stroke="url(#logoGrad)" stroke-width="5"/>
+        <circle cx="50" cy="50" r="5" fill="var(--accent-1)"/>
+      </svg>
+      <div class="brand-text">Chip<span>Fresco</span></div>
+    </div>
+    <div class="links">
+      <a onclick="openTab('windows'); playSound('click');" id="nav-windows">Windows</a>
+      <a onclick="openTab('mac'); playSound('click');" id="nav-mac">Mac</a>
+      <a onclick="openTab('consolas'); playSound('click');" id="nav-consolas">Consolas</a>
+      <a onclick="openTab('armado'); playSound('click');" id="nav-armado">Armado de PC</a>
+    </div>
+    <a href="https://wa.me/5216623800032?text=Hola%20An%C3%ADbal,%20necesito%20ayuda%20con%20un%20equipo." target="_blank" class="btn-wa" onclick="playSound('success');">WhatsApp Directo</a>
+  </nav>
+</header>
+
+<div id="tab-home" class="tab-content active">
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow reveal d-1">Hermosillo · Recolección y entrega gratis</span>
+      <h1 class="reveal d-2">El calor de Hermosillo también <br><em>castiga</em> tu equipo.</h1>
+      <p class="lead reveal d-3">Mantenimiento preventivo, reparaciones, formateos y ensamblaje a medida para revivir y potenciar tu tecnología.</p>
+      
+      <!-- Ilustraciones decorativas extra (añadidas exactamente como en la segunda captura) -->
+      <div class="home-features reveal d-4">
+        <div class="feature-card">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+          <div><strong>Garantía</strong>por servicio</div>
+        </div>
+        <div class="feature-card">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <div><strong>Soporte</strong>rápido</div>
+        </div>
+        <div class="feature-card">
+          <svg viewBox="0 0 24 24"><path d="M3 3h11v11H3z"/><path d="M14 8h5l3 3v5h-8z"/><circle cx="5.5" cy="18.5" r="1.5"/><circle cx="17.5" cy="18.5" r="1.5"/></svg>
+          <div><strong>Recolección</strong>y entrega gratis</div>
+        </div>
+        <div class="feature-card">
+          <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          <div><strong>Profesionales</strong>especializados</div>
+        </div>
+      </div>
+      
+      <!-- Se mantienen los botones de acceso rápido tal cual estaban -->
+      <div class="type-selector reveal d-4">
+        <div class="type-card" onclick="openTab('windows'); playSound('click');">
+          <svg viewBox="0 0 24 24"><path d="M2 2h9v9H2V2zm11 0h9v9h-9V2zM2 13h9v9H2v-9zm11 0h9v9h-9v-9z"/></svg>
+          <h3>Computadora Windows</h3><div class="card-arrow">→</div>
+        </div>
+        
+        <div class="type-card" onclick="openTab('consolas'); playSound('click');">
+          <!-- Icono de control calcado a partir de la imagen proporcionada -->
+          <svg viewBox="0 0 64 64" fill="currentColor" style="width: 82px !important; height: 82px !important;">
+            <path d="M 47.5 15.6 C 42.4 14.5 37.1 14 32 14 C 26.9 14 21.6 14.5 16.5 15.6 C 10.3 16.9 6 22.8 6 29.3 L 6 34.6 C 6 41.5 9 47.9 14.1 52 C 16.8 54.2 21 54.5 24.3 52 L 26.8 50 C 28.3 48.9 30.1 48 32 48 C 33.9 48 35.7 48.9 37.2 50 L 39.7 52 C 43 54.5 47.2 54.2 49.9 52 C 55 47.9 58 41.5 58 34.6 L 58 29.3 C 58 22.8 53.7 16.9 47.5 15.6 Z M 53 34.6 C 53 40.2 50.5 45.4 46.5 48.6 C 45.1 49.7 43.1 49.6 41.6 48.5 L 39.1 46.5 C 37.1 44.9 34.6 44 32 44 C 29.4 44 26.9 44.9 24.9 46.5 L 22.4 48.5 C 20.9 49.6 18.9 49.7 17.5 48.6 C 13.5 45.4 11 40.2 11 34.6 L 11 29.3 C 11 24.3 14.2 19.8 19 18.7 C 23.4 17.7 28 17 32 17 C 36 17 40.6 17.7 45 18.7 C 49.8 19.8 53 24.3 53 29.3 L 53 34.6 Z"/>
+            <path d="M 21 30 H 18 V 27 C 18 26.4 17.6 26 17 26 H 15 C 14.4 26 14 26.4 14 27 V 30 H 11 C 10.4 30 10 30.4 10 31 V 33 C 10 33.6 10.4 34 11 34 H 14 V 37 C 14 37.6 14.4 38 15 38 H 17 C 17.6 38 18 37.6 18 37 V 34 H 21 C 21.6 34 22 33.6 22 33 V 31 C 22 30.4 21.6 30 21 30 Z" />
+            <rect x="27" y="25.5" width="10" height="3" rx="1.5" />
+            <circle cx="48" cy="27" r="3" />
+            <circle cx="43" cy="32" r="3" />
+            <circle cx="53" cy="32" r="3" />
+            <circle cx="48" cy="37" r="3" />
+          </svg>
+          <h3>Consola de Videojuegos</h3><div class="card-arrow">→</div>
+        </div>
+        
+        <div class="type-card" onclick="openTab('mac'); playSound('click');">
+          <svg viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.19 2.31-.88 3.5-.8 1.54.11 2.8.76 3.61 1.95-3.06 1.73-2.54 5.92.51 7.15-.65 1.63-1.6 3.03-2.7 4.07V20.28zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+          <h3>Equipo Apple</h3><div class="card-arrow">→</div>
+        </div>
+      </div>
+      
+      <div class="hero-text-block reveal d-4">
+        <p>
+          <strong>No dejes que las altas temperaturas arruinen tu inversión.</strong><br><br>
+          Limpieza, diagnóstico, reparación, formateo — y hasta una segunda vida para tu Mac o tu consola. Pasta térmica nueva, garantía real, cero letras chiquitas.
+        </p>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- ================= PESTAÑAS ================= -->
+
+<div id="tab-windows" class="tab-content">
+  <section class="wrap">
+    <button class="btn-ghost btn-back reveal d-1" onclick="openTab('home'); playSound('click');">⬅ Volver a Inicio</button>
+    
+    <div class="info-box reveal d-2" style="margin-bottom:40px;" onclick="openTab('armado'); playSound('click');">
+      <h4>¿Quieres armar tu propia PC GAMER?</h4>
+      <p>Haz clic aquí para ir a nuestra sección de Ensambles a la Medida y cotizar tu equipo ideal con los mejores componentes.</p>
+    </div>
+    
+    <div class="section-head reveal d-2">
+      <span class="eyebrow">PC y Laptops Windows</span>
+      <h2>Limpieza, Formateo y Actualizaciones</h2>
+    </div>
+    
+    <div class="ba-slider reveal d-2" id="slider-win">
+      <div class="ba-layer ba-before"><img src="win-antes.jpg" alt="PC Windows Sucia"></div>
+      <div class="ba-layer ba-after"><img src="win-despues.jpg" alt="PC Windows Limpia"></div>
+      <div class="ba-divider"></div>
+      <div class="ba-handle"></div>
+      <input type="range" class="ba-range" min="0" max="100" value="50">
+    </div>
+    
+    <h3 class="subgroup-title reveal d-3">Diagnóstico y Limpieza</h3>
+    <div class="grid-3 reveal d-3">
+      <div class="price-card" onclick="promptService('Diagnóstico PC Windows'); playSound('click');">
+        <span class="tag">Revisión General</span>
+        <h3>Diagnóstico</h3>
+        <div class="price">$100 <small>MXN</small></div>
+        <p class="desc">Revisión integral de componentes y software para detectar la raíz exacta del problema en tu equipo.</p>
+      </div>
+      <div class="price-card featured" onclick="promptService('Limpieza Profunda PC Windows'); playSound('click');">
+        <span class="tag">🔥 Más Vendido</span>
+        <h3>Limpieza Profunda + Pasta Térmica</h3>
+        <div class="price">$350 <small>MXN</small></div>
+        <p class="desc">Desensamble total del equipo pieza por pieza.</p>
+        <ul><li>Limpieza de tarjeta madre y disipadores</li><li>Cambio de pasta térmica premium</li><li>Gestión de cables para flujo de aire</li></ul>
+      </div>
+      <div class="price-card" onclick="promptService('Limpieza + Formateo PC Windows'); playSound('click');">
+        <span class="tag">⭐ Paquete Estrella</span>
+        <h3>Limpieza + Pasta + Formateo</h3>
+        <div class="price">$450 <small>MXN</small></div>
+        <p class="desc">Combina el mantenimiento físico extremo con una renovación total del sistema operativo para dejar tu computadora como nueva.</p>
+      </div>
+    </div>
+    
+    <!-- NUEVA SECCIÓN AÑADIDA: Software y Almacenamiento -->
+    <h3 class="subgroup-title reveal d-4">Software y Almacenamiento</h3>
+    <div class="grid-3 reveal d-4">
+      <div class="price-card" onclick="promptService('Formateo con Respaldo Seguro'); playSound('click');">
+        <span class="tag">SISTEMA FRESCO</span>
+        <h3>Formateo con Respaldo Seguro</h3>
+        <div class="price">$300 <small>MXN</small></div>
+        <ul>
+          <li>Instalación de la versión de Windows más reciente</li>
+          <li>Paquetería Office completamente activada</li>
+          <li>Instalación y actualización de Drivers</li>
+        </ul>
+      </div>
+      <div class="price-card" onclick="promptService('Instalación de Software'); playSound('click');">
+        <span class="tag">A MEDIDA</span>
+        <h3>Instalación de Software</h3>
+        <div class="price">$150 <small>MXN</small></div>
+        <p class="desc">Instalamos lo que requieras: paquetería de diseño (Adobe), ingeniería (AutoCAD), librerías de programación, antivirus o utilidades de sistema específicas.</p>
+      </div>
+      <div class="price-card featured" onclick="promptService('Actualización a Disco SSD'); playSound('click');">
+        <span class="tag">🚀 MÁXIMA VELOCIDAD</span>
+        <h3>Actualización a Disco SSD</h3>
+        <div class="price">$450 <small>MXN</small></div>
+        <ul>
+          <li>Instalación física de la unidad de estado sólido</li>
+          <li>Instalación de Windows limpia y optimizada</li>
+          <li>Paquetería Office activada y lista</li>
+        </ul>
+        <p class="desc" style="font-size: 0.85rem; margin-top: 10px; opacity: 0.8;">*Nota: El disco SSD se cobra aparte dependiendo de la capacidad.</p>
+      </div>
+    </div>
+
+  </section>
+</div>
+
+<div id="tab-mac" class="tab-content">
+  <section class="wrap">
+    <button class="btn-ghost btn-back reveal d-1" onclick="openTab('home'); playSound('click');">⬅ Volver a Inicio</button>
+    <div class="section-head reveal d-2">
+      <span class="eyebrow">MacBook e iMac</span>
+      <h2>Servicio Especializado Apple</h2>
+    </div>
+    
+    <div class="ba-slider reveal d-2" id="slider-mac">
+      <div class="ba-layer ba-before"><img src="mac-antes.jpg" alt="Mac OS Antiguo"></div>
+      <div class="ba-layer ba-after"><img src="mac-despues.jpg" alt="Mac OS Nuevo"></div>
+      <div class="ba-divider"></div>
+      <div class="ba-handle"></div>
+      <input type="range" class="ba-range" min="0" max="100" value="50">
+    </div>
+    
+    <div class="grid-3 reveal d-3">
+      <div class="price-card" onclick="promptService('Limpieza Profunda de Mac'); playSound('click');">
+        <span class="tag">Mantenimiento Físico</span>
+        <h3>Limpieza Profunda de Mac</h3>
+        <div class="price">$500 <small>MXN</small></div>
+        <p class="desc">Apertura extremadamente cuidadosa. Remoción de polvo en ventiladores y placa. Cambio de pasta térmica premium.</p>
+      </div>
+      <div class="price-card" onclick="promptService('Actualización de Sistema Mac'); playSound('click');">
+        <span class="tag">Segunda Vida</span>
+        <h3>Actualización de Sistema</h3>
+        <div class="price">$550 <small>MXN</small></div>
+        <p class="desc">Llevamos los equipos Mac abandonados por Apple a versiones modernas, permitiéndote instalar aplicaciones recientes.</p>
+      </div>
+      <div class="price-card featured" onclick="promptService('Actualización Mac + Limpieza'); playSound('click');">
+        <span class="tag">🏆 El Más Elegido</span>
+        <h3>Actualización a OS Reciente + Limpieza</h3>
+        <div class="price">$800 <small>MXN</small></div>
+        <p class="desc">El paquete definitivo para revivir Macs viejas. Mantenimiento profundo con pasta térmica y sistema actual compatible.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="tab-consolas" class="tab-content">
+  <section class="wrap">
+    <button class="btn-ghost btn-back reveal d-1" onclick="openTab('home'); playSound('click');">⬅ Volver a Inicio</button>
+    <div class="section-head reveal d-2">
+      <span class="eyebrow">PS4 · PS5 · Xbox · Switch</span>
+      <h2>Mantenimiento de Consolas</h2>
+    </div>
+    
+    <div class="ba-slider reveal d-2" id="slider-xbox">
+      <div class="ba-layer ba-before"><img src="xbox-antes.jpg" alt="Xbox Series X sucia"></div>
+      <div class="ba-layer ba-after"><img src="xbox-despues.jpg" alt="Xbox Series X limpia"></div>
+      <div class="ba-divider"></div>
+      <div class="ba-handle"></div>
+      <input type="range" class="ba-range" min="0" max="100" value="50">
+    </div>
+    
+    <div class="grid-2 reveal d-3" style="margin-top:32px;">
+      <div class="price-card" onclick="promptService('Limpieza de consola'); playSound('click');">
+        <span class="tag">Mantenimiento Preventivo</span>
+        <h3>Limpieza de consola</h3>
+        <div class="price">$200 <small>MXN</small></div>
+        <p class="desc">Limpieza estética externa e interna rápida para quitar la acumulación de polvo superficial. Revisión de disipación.</p>
+      </div>
+      <div class="price-card featured" onclick="promptService('Limpieza Profunda + Pasta Térmica Consola'); playSound('click');">
+        <span class="tag">🎮 Más Solicitado</span>
+        <h3>Limpieza Profunda + Pasta Térmica</h3>
+        <div class="price">$380 <small>MXN</small></div>
+        <p class="desc">Solución definitiva si tu consola parece turbina de avión o se apaga sola.</p>
+        <ul><li>Desensamble completo pieza por pieza</li><li>Limpieza a fondo del disipador principal</li><li>Pasta térmica nueva de alto rendimiento</li></ul>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="tab-armado" class="tab-content">
+  <div class="marquee reveal d-1">
+    <div class="marquee-track">
+      <img src="logo-asus.png" alt="ASUS"><img src="logo-msi.png" alt="MSI"><img src="logo-corsair.png" alt="Corsair">
+      <img src="logo-gskill.png" alt="G.Skill"><img src="logo-nvidia.png" alt="NVIDIA"><img src="logo-amd.png" alt="AMD">
+    </div>
+    <div class="marquee-track" aria-hidden="true">
+      <img src="logo-asus.png" alt="ASUS"><img src="logo-msi.png" alt="MSI"><img src="logo-corsair.png" alt="Corsair">
+      <img src="logo-gskill.png" alt="G.Skill"><img src="logo-nvidia.png" alt="NVIDIA"><img src="logo-amd.png" alt="AMD">
+    </div>
+  </div>
+  <section class="wrap" style="padding-top:0;">
+    <button class="btn-ghost btn-back reveal d-2" onclick="openTab('home'); playSound('click');">⬅ Volver a Inicio</button>
+    <div class="section-head reveal d-2">
+      <span class="eyebrow">A la medida de tus necesidades</span>
+      <h2>Armado de PC Custom</h2>
+    </div>
+    
+    <div class="grid-2 reveal d-3">
+      <div class="info-box" style="margin-top:0;display:flex;flex-direction:column;justify-content:center;" onclick="promptService('Cotización de Armado de PC'); playSound('click');">
+        <h4>Haz clic aquí para cotizar tu ensamble</h4>
+        <p style="margin-top:10px;">Dinos para qué quieres usar la computadora y cuánto planeas invertir. Nosotros te hacemos una propuesta equilibrada, escogiendo los mejores componentes del mercado para garantizarte el mejor rendimiento sin cuellos de botella.</p>
+        <button class="btn-ghost" style="margin-top:24px;align-self:flex-start;">Abrir Cotizador</button>
+      </div>
+      
+      <div class="image-box">
+        <img src="pc-armada.jpg" alt="Computadora Gamer Custom Armada">
+      </div>
+    </div>
+  </section>
+</div>
+
+<button class="fab-bot" id="fabBot" title="Asistente ChipFresco">💬</button>
+
+<div class="bot-panel" id="botPanel">
+  <div class="bot-head">
+    <div class="bot-head-title"><span class="dot"></span>Asistente ChipFresco</div>
+    <div class="bot-close" id="botClose">✕</div>
+  </div>
+  <div class="bot-msgs" id="botMsgs"></div>
+  <div class="bot-suggestions" id="botSuggestions"></div>
+  <div class="bot-input-row">
+    <input type="text" id="botInput" placeholder="Escribe tu respuesta..." autocomplete="off" enterkeyhint="send">
+    <button id="botSend">➤</button>
+  </div>
+</div>
+
+<script>
+  /* ================= AUDIO ENGINE SILENCIOSO ================= */
+  let audioCtx = null;
+  let soundEnabled = true;
+  let audioUnlocked = false;
+
+  const unlockAudio = () => {
+    if (audioUnlocked || !soundEnabled) return;
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const buffer = audioCtx.createBuffer(1, 1, 22050);
+      const source = audioCtx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioCtx.destination);
+      source.start(0);
+      audioUnlocked = true;
+      ['click', 'touchstart', 'keydown', 'scroll'].forEach(evt => 
+        document.body.removeEventListener(evt, unlockAudio, { capture: true })
+      );
+    } catch(e) {}
+  };
+  
+  ['click', 'touchstart', 'keydown', 'scroll'].forEach(evt => {
+    document.body.addEventListener(evt, unlockAudio, { capture: true, once: true });
+  });
+
+  function playSound(type) {
+    if (!soundEnabled || !audioUnlocked || !audioCtx) return;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    try {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      const now = audioCtx.currentTime;
+
+      if (type === 'click') {
+        osc.type = 'sine'; osc.frequency.setValueAtTime(450, now);
+        osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+        gain.gain.setValueAtTime(0.0, now); gain.gain.linearRampToValueAtTime(0.05, now + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        osc.start(now); osc.stop(now + 0.1);
+      } else if (type === 'success') {
+        osc.type = 'triangle'; osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.setValueAtTime(659.25, now + 0.08); osc.frequency.setValueAtTime(783.99, now + 0.16);
+        gain.gain.setValueAtTime(0.0, now); gain.gain.linearRampToValueAtTime(0.06, now + 0.05);
+        gain.gain.setValueAtTime(0.06, now + 0.2); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        osc.start(now); osc.stop(now + 0.5);
+      } else if (type === 'message') {
+        osc.type = 'sine'; osc.frequency.setValueAtTime(750, now);
+        osc.frequency.exponentialRampToValueAtTime(600, now + 0.1);
+        gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(0.04, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        osc.start(now); osc.stop(now + 0.1);
+      } else if (type === 'hover') {
+        osc.type = 'sine'; osc.frequency.setValueAtTime(900, now);
+        gain.gain.setValueAtTime(0.0, now); gain.gain.linearRampToValueAtTime(0.015, now + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+        osc.start(now); osc.stop(now + 0.04);
+      }
+    } catch(e) {}
+  }
+
+  document.getElementById('soundToggle').addEventListener('click', function() {
+    soundEnabled = !soundEnabled;
+    this.classList.toggle('muted', !soundEnabled);
+    this.textContent = soundEnabled ? '🔊' : '🔇';
+    if (soundEnabled && !audioUnlocked) unlockAudio();
+  });
+
+  /* ================= TABS & ANIMACIONES ================= */
+  function openTab(tabId) {
+    document.body.setAttribute('data-theme', tabId);
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.links a').forEach(el => el.classList.remove('active-link'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    let navLink = document.getElementById('nav-' + tabId);
+    if (navLink) navLink.classList.add('active-link');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    const elements = document.getElementById('tab-' + tabId).querySelectorAll('.reveal');
+    elements.forEach(el => {
+      el.style.animation = 'none';
+      el.offsetHeight; 
+      el.style.animation = null; 
+    });
+  }
+
+  /* ================= SLIDERS ================= */
+  function initSlider(sliderId) {
+    const root = document.getElementById(sliderId);
+    if (!root) return;
+    const range = root.querySelector('.ba-range');
+    const before = root.querySelector('.ba-before');
+    const after = root.querySelector('.ba-after');
+    const divider = root.querySelector('.ba-divider');
+    const handle = root.querySelector('.ba-handle');
+    function update(v) {
+      before.style.clipPath = 'inset(0 ' + (100 - v) + '% 0 0)';
+      after.style.clipPath = 'inset(0 0 0 ' + v + '%)';
+      divider.style.left = v + '%';
+      handle.style.left = v + '%';
+    }
+    range.addEventListener('input', e => update(e.target.value));
+    update(range.value);
+  }
+  initSlider('slider-win');
+  initSlider('slider-mac');
+  initSlider('slider-xbox');
+
+  /* ================= MODAL ================= */
+  let selectedService = "";
+  const WHATSAPP_NUMBER = "5216623800032";
+
+  function promptService(serviceName) {
+    selectedService = serviceName;
+    document.getElementById('modal-service-display').innerText = serviceName;
+    document.getElementById('service-modal').classList.add('active');
+    playSound('click');
+  }
+
+  function closeModal() {
+    document.getElementById('service-modal').classList.remove('active');
+  }
+
+  function sendServiceWa() {
+    const msg = 'Hola Aníbal, estoy interesado en el servicio de: ' + selectedService + '. ¿Podemos agendar?';
+    window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
+    closeModal();
+  }
+
+  function openServiceBot() {
+    closeModal();
+    openBotWithFlow(selectedService);
+  }
+
+  /* ================= CHATBOT CORREGIDO (Lógica desde el bot esta bien_2.html) ================= */
+  const panel = document.getElementById('botPanel');
+  const msgsEl = document.getElementById('botMsgs');
+  const suggEl = document.getElementById('botSuggestions');
+  const inputEl = document.getElementById('botInput');
+  let botState = 'init';
+  let userData = {};
+
+  function scrollToBottom() { msgsEl.scrollTop = msgsEl.scrollHeight; }
+  function addBotMsg(text) { const d = document.createElement('div'); d.className = 'msg bot'; d.textContent = text; msgsEl.appendChild(d); scrollToBottom(); playSound('message'); }
+  function addUserMsg(text) { const d = document.createElement('div'); d.className = 'msg user'; d.textContent = text; msgsEl.appendChild(d); scrollToBottom(); }
+  
+  function setChips(chips) {
+    suggEl.innerHTML = '';
+    chips.forEach(chip => {
+      const b = document.createElement('button');
+      b.className = 'chip-btn'; b.textContent = chip.label;
+      b.onclick = function() { playSound('click'); chip.fn(); };
+      b.addEventListener('mouseenter', () => playSound('hover'));
+      suggEl.appendChild(b);
+    });
+  }
+  function clearChips() { suggEl.innerHTML = ''; }
+
+  function openBotWithFlow(preSelectedService) {
+    panel.classList.add('open');
+    if (botState === 'init' && msgsEl.innerHTML === '') botFlow(preSelectedService);
+  }
+
+  function botFlow(preSelectedService) {
+    userData = { nombre: '', equipo: '', servicio: '', puntoEncuentro: '', horario: '' };
+    addBotMsg('¡Hola! Soy Aníbal, el técnico de ChipFresco. Para poder ayudarte mejor, ¿Me podrías decir tu nombre?');
+    botState = 'esperando_nombre';
+    if (preSelectedService) userData.servicio = preSelectedService;
+    inputEl.disabled = false; inputEl.placeholder = 'Escribe tu nombre...'; inputEl.focus();
+    setTimeout(() => { if (window.innerWidth <= 640) inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300);
+  }
+
+  function ubicacionHermosillo(esLocal) {
+    clearChips(); addUserMsg(esLocal ? 'Sí' : 'No');
+    if (!esLocal) {
+      setTimeout(() => {
+        addBotMsg('Lo siento, actualmente estamos limitados al área de Hermosillo, Sonora. 🌵');
+        botState = 'end'; inputEl.disabled = true; inputEl.placeholder = 'Servicio no disponible en tu zona.';
+      }, 400);
+    } else {
+      if (userData.servicio) {
+        userData.equipo = 'Equipo especificado en el servicio';
+        setTimeout(() => { addBotMsg('Perfecto. Vi que seleccionaste el servicio: "' + userData.servicio + '".'); explicarHorarios(); }, 400);
+      } else {
+        setTimeout(() => {
+          addBotMsg('Perfecto. Ahora dime, ¿Para qué tipo de equipo necesitas ayuda?');
+          botState = 'esperando_equipo'; inputEl.disabled = true; inputEl.placeholder = 'Selecciona una opción arriba 👆';
+          
+          setChips([
+            { label: 'Mac / MacBook', fn: () => selectEquipo('Mac / MacBook') },
+            { label: 'Laptop Windows', fn: () => selectEquipo('Laptop Windows') },
+            { label: 'PC de Escritorio', fn: () => selectEquipo('PC de Escritorio') },
+            { label: 'Consola', fn: () => selectEquipo('Consola') },
+            { label: 'Armado PC', fn: () => selectEquipo('Armado de PC Nuevo') }
+          ]);
+        }, 400);
+      }
+    }
+  }
+
+  function handleUserInput(text) {
+    if (!text.trim()) return;
+    addUserMsg(text); inputEl.value = '';
+    
+    if (botState === 'esperando_nombre') {
+      userData.nombre = text;
+      setTimeout(() => {
+        addBotMsg('Mucho gusto ' + userData.nombre + '. Para confirmar cobertura, ¿te encuentras en Hermosillo, Sonora?');
+        botState = 'esperando_ubicacion'; inputEl.disabled = true; inputEl.placeholder = 'Selecciona una opción arriba 👆';
+        setChips([
+          { label: 'Sí, soy de Hermosillo', fn: () => ubicacionHermosillo(true) },
+          { label: 'No, soy de fuera', fn: () => ubicacionHermosillo(false) }
+        ]);
+      }, 400);
+      
+    } else if (botState === 'esperando_resumen_pc') {
+      userData.servicio = 'Armado Custom: ' + text;
+      finalizarFlujoArmado(); // Salta ubicación y horarios directo a enviar WhatsApp
+      
+    } else if (botState === 'esperando_servicio') {
+      userData.servicio = text; explicarHorarios();
+    }
+  }
+
+  function selectEquipo(equipoStr) {
+    addUserMsg(equipoStr); userData.equipo = equipoStr; clearChips();
+    inputEl.disabled = false; inputEl.placeholder = 'Escribe tu respuesta...';
+    
+    if (equipoStr === 'Armado de PC Nuevo') {
+      setTimeout(() => { 
+        addBotMsg('Perfecto, dame un breve resumen de lo que quieres hacer con tu pc custom para encontrarte la mejor configuración y armar tu presupuesto.'); 
+        botState = 'esperando_resumen_pc'; 
+      }, 400);
+    } else {
+      setTimeout(() => { 
+        addBotMsg('Entendido. ¿Qué tipo de trabajo necesitas que le hagamos a tu ' + equipoStr + '?'); 
+        botState = 'esperando_servicio'; 
+      }, 400);
+    }
+  }
+
+  function finalizarFlujoArmado() {
+    clearChips(); inputEl.disabled = true; inputEl.placeholder = 'Enviando información...';
+    setTimeout(() => {
+      addBotMsg('¡Perfecto! Ya tengo los detalles. Toca el botón de abajo para mandarme esta info por WhatsApp y armar tu cotización.');
+      const resumen = '¡Hola Aníbal! Quiero armar una PC Custom 🖥️\n\n👤 Nombre: ' + userData.nombre + '\n📝 Detalles: ' + userData.servicio;
+      const btnLink = document.createElement('a');
+      btnLink.href = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(resumen);
+      btnLink.target = '_blank'; btnLink.className = 'chip-confirm'; btnLink.textContent = 'Cotizar por WhatsApp ✅';
+      msgsEl.appendChild(btnLink); scrollToBottom(); playSound('success'); botState = 'init'; 
+    }, 600);
+  }
+
+  function explicarHorarios() {
+    botState = 'explicando_horarios';
+    setTimeout(() => {
+      addBotMsg('Tomo nota.\n\nTe explico nuestros horarios:\n🔹 Lun y Mar: Todo el día (9:00 AM a 5:00 PM).\n🔹 Mié a Dom: Recolección después de las 4:30 PM. Entrega al día siguiente a las 6:00 PM.\n\nSabiendo esto, ¿qué día prefieres?');
+      inputEl.disabled = false; inputEl.placeholder = 'Escribe tu preferencia de día...'; inputEl.focus();
+      botState = 'esperando_horario';
+      if (window.innerWidth <= 640) setTimeout(() => inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+    }, 500);
+  }
+
+  function interceptInput(text) {
+    if (botState === 'esperando_horario') {
+      addUserMsg(text); inputEl.value = ''; userData.horario = text;
+      setTimeout(() => {
+        addBotMsg('IMPORTANTE: Las recolecciones y entregas se hacen **Únicamente en punto medio**.\n\nTenemos dos opciones. ¿Cuál te queda mejor?');
+        inputEl.disabled = true; inputEl.placeholder = 'Selecciona un punto medio 👇';
+        setChips([
+          { label: 'Walmart Solidaridad Reforma', fn: () => finalizarFlujo('Walmart Solidaridad Reforma') },
+          { label: 'Unison', fn: () => finalizarFlujo('Unison') }
+        ]);
+      }, 500);
+    } else {
+      handleUserInput(text);
+    }
+  }
+
+  function finalizarFlujo(punto) {
+    addUserMsg(punto); userData.puntoEncuentro = punto; clearChips(); inputEl.disabled = true; inputEl.placeholder = 'Enviando información...';
+    setTimeout(() => {
+      addBotMsg('¡Todo listo! Toca el botón de abajo para enviarme este resumen directo a mi WhatsApp y confirmar tu cita.');
+      const resumen = '¡Hola Aníbal! Quiero confirmar una cita 🛠️\n\n👤 Nombre: ' + userData.nombre + '\n🔧 Servicio: ' + userData.servicio + '\n⏰ Día/Hora: ' + userData.horario + '\n🤝 Punto de Encuentro: ' + userData.puntoEncuentro;
+      const btnLink = document.createElement('a');
+      btnLink.href = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(resumen);
+      btnLink.target = '_blank'; btnLink.className = 'chip-confirm'; btnLink.textContent = 'Confirmar por WhatsApp ✅';
+      msgsEl.appendChild(btnLink); scrollToBottom(); playSound('success'); botState = 'init'; 
+    }, 600);
+  }
+
+  /* ================= EVENT LISTENERS ================= */
+  document.getElementById('fabBot').addEventListener('click', () => {
+    playSound('click');
+    const isOpen = panel.classList.contains('open');
+    if (isOpen) panel.classList.remove('open');
+    else openBotWithFlow();
+  });
+
+  document.getElementById('botClose').addEventListener('click', () => { playSound('click'); panel.classList.remove('open'); });
+  document.getElementById('botSend').addEventListener('click', () => { playSound('click'); interceptInput(inputEl.value); });
+  inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') { playSound('click'); interceptInput(inputEl.value); } });
+  document.querySelectorAll('.price-card, .type-card, .btn-ghost, .btn-wa, .info-box, .hero-text-block, .feature-card').forEach(el => { el.addEventListener('mouseenter', () => playSound('hover')); });
+  document.getElementById('service-modal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+</script>
+</body>
+</html>
