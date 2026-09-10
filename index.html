@@ -2,13 +2,65 @@
 <html lang="es-MX">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ChipFresco · Cómputo, Mac y consolas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
+<title>ChipFresco · Servicio Técnico de Cómputo, Mac y Consolas en Hermosillo</title>
+<meta name="description" content="Reparación, limpieza profunda, formateo y armado de PC en Hermosillo, Sonora. Servicio técnico para computadoras Windows, equipos Mac y consolas (PS5, Xbox, Switch), con recolección y entrega gratis.">
+<meta name="keywords" content="servicio técnico Hermosillo, reparación de computadoras Hermosillo, limpieza de PC Hermosillo, formateo de laptop Hermosillo, reparación Mac Hermosillo, limpieza de consolas PS5 Xbox Switch, armado de PC gamer Hermosillo, ChipFresco">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.chipfresco.shop/">
+
+<!-- Open Graph / Facebook, WhatsApp, etc. -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_MX">
+<meta property="og:site_name" content="ChipFresco">
+<meta property="og:title" content="ChipFresco · Servicio Técnico de Cómputo, Mac y Consolas en Hermosillo">
+<meta property="og:description" content="Reparación, limpieza, formateo y armado de PC en Hermosillo, Sonora. Recolección y entrega gratis.">
+<meta property="og:url" content="https://www.chipfresco.shop/">
+<meta property="og:image" content="https://www.chipfresco.shop/og-image-chipfresco.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ChipFresco · Servicio Técnico en Hermosillo">
+<meta name="twitter:description" content="Reparación, limpieza, formateo y armado de PC en Hermosillo, Sonora.">
+<meta name="twitter:image" content="https://www.chipfresco.shop/og-image-chipfresco.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" sizes="192x192" href="https://www.chipfresco.shop/favicon.png?v=3">
 <link rel="shortcut icon" href="https://www.chipfresco.shop/favicon.png?v=3">
+
+<!-- Datos estructurados para Google (ficha de negocio local) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ElectronicsStore",
+  "name": "ChipFresco",
+  "alternateName": "ChipFresco Hermosillo",
+  "description": "Servicio técnico de reparación, limpieza, formateo y armado de computadoras Windows, equipos Mac y consolas de videojuegos en Hermosillo, Sonora.",
+  "url": "https://www.chipfresco.shop/",
+  "image": "https://www.chipfresco.shop/og-image-chipfresco.jpg",
+  "telephone": "+525632093598",
+  "priceRange": "$$",
+  "areaServed": {
+    "@type": "City",
+    "name": "Hermosillo"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Hermosillo",
+    "addressRegion": "Sonora",
+    "addressCountry": "MX"
+  },
+  "sameAs": [
+    "https://www.instagram.com/chipfresco",
+    "https://www.facebook.com/chipfresco",
+    "https://www.tiktok.com/@chipfresco"
+  ]
+}
+</script>
 
 <style>
   :root {
@@ -304,7 +356,7 @@
 
   /* Imagen Armado */
   .image-box { border-radius: var(--radius-lg); overflow: hidden; border: 2px solid rgba(255,255,255,0.08); position: relative; z-index: 1; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-  .image-box img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform var(--transition-snappy); }
+  .image-box img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform var(--transition-snappy), opacity 0.6s ease, filter 0.6s ease; }
   .image-box:hover img { transform: scale(1.05); }
 
   /* Sliders */
@@ -313,7 +365,7 @@
     overflow: hidden; border: 2px solid rgba(255,255,255,0.1); aspect-ratio: 1 / 1; box-shadow: 0 25px 60px rgba(0,0,0,0.6);
   }
   .ba-layer { position: absolute; inset: 0; overflow: hidden; }
-  .ba-layer img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ba-layer img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.6s ease, filter 0.6s ease; }
   .ba-divider { position: absolute; top: 0; bottom: 0; width: 3px; background: rgba(255,255,255,0.95); pointer-events: none; z-index: 2; transform: translateX(-50%); box-shadow: 0 0 15px rgba(255,255,255,0.6); }
   .ba-handle { position: absolute; top: 50%; width: 40px; height: 40px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; color: var(--bg); transform: translate(-50%,-50%); pointer-events: none; z-index: 3; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: transform var(--transition-snappy); }
   .ba-handle::before, .ba-handle::after { content: ''; position: absolute; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
@@ -328,8 +380,12 @@
   .marquee::before { left: 0; background: linear-gradient(90deg,var(--bg-elevated),transparent); }
   .marquee::after { right: 0; background: linear-gradient(-90deg,var(--bg-elevated),transparent); }
   .marquee-track { display: flex; align-items: center; justify-content: space-around; flex-shrink: 0; min-width: 100%; gap: 70px; padding-right: 70px; animation: scroll-marquee 30s linear infinite; }
-  .marquee-track img { width: 130px; height: 48px; object-fit: contain; filter: grayscale(100%) opacity(0.4); transition: all 0.4s ease; }
-  .marquee-track img:hover { filter: grayscale(0%) opacity(1); transform: scale(1.15); }
+  .marquee-track img {
+    height: 60px; width: auto; max-width: 170px; object-fit: contain;
+    filter: brightness(0) invert(1) opacity(0.7);
+    transition: all 0.4s ease;
+  }
+  .marquee-track img:hover { filter: brightness(0) invert(1) opacity(1); transform: scale(1.12); }
   @keyframes scroll-marquee { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 
   /* ================= ILUSTRACIONES DECORATIVAS HOME ================= */
@@ -422,13 +478,69 @@
 
   @media (max-width:640px) {
     .fab-bot { width: 64px; height: 64px; bottom: 20px; right: 20px; font-size: 1.6rem; }
-    .bot-panel { bottom: 95px; right: 16px; left: 16px; width: calc(100% - 32px); max-width: 100%; height: 78vh; border-radius: var(--radius-xl); transform-origin: bottom center; }
+    .bot-panel {
+      top: var(--app-vh-offset, 0px); left: 0; right: 0; bottom: auto;
+      width: 100%; max-width: 100%;
+      height: var(--app-vh, 100dvh); max-height: none; min-height: 0;
+      border-radius: 0;
+      transform-origin: bottom center;
+    }
+    .bot-head { padding-top: calc(22px + env(safe-area-inset-top)); }
+    .bot-input-row { padding-bottom: calc(18px + env(safe-area-inset-bottom)); }
   }
+
+  html.bot-open { overflow: hidden; height: 100%; }
 
   .sound-toggle { position: fixed; bottom: 32px; left: 32px; z-index: 70; width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; transition: all var(--transition-snappy); backdrop-filter: blur(10px); }
   .sound-toggle:hover { background: rgba(255,255,255,0.15); color: #fff; transform: scale(1.15); box-shadow: 0 8px 25px rgba(0,0,0,0.4); }
   .sound-toggle.muted { opacity: 0.5; filter: grayscale(1); }
   @media (max-width:640px) { .sound-toggle { bottom: 20px; left: 20px; width: 48px; height: 48px; } }
+
+  /* ================= CARGA DIFERIDA DE IMÁGENES (fundido suave) ================= */
+  .lazy-img { opacity: 0; filter: blur(14px); }
+  .lazy-img.is-loaded { opacity: 1; filter: blur(0); }
+
+  /* ================= VALIDACIÓN DE ENTRADAS DEL BOT ================= */
+  @keyframes inputShake {
+    10%, 90% { transform: translateX(-2px); }
+    20%, 80% { transform: translateX(4px); }
+    30%, 50%, 70% { transform: translateX(-8px); }
+    40%, 60% { transform: translateX(8px); }
+  }
+  .bot-input-row input.input-shake { animation: inputShake 0.4s ease; border-color: #FF5E5E; }
+
+  /* ================= FOOTER: REDES SOCIALES Y RESEÑAS ================= */
+  .site-footer {
+    position: relative; z-index: 2; margin-top: 60px; padding: 48px 0 32px;
+    border-top: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.015);
+  }
+  .footer-inner {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 28px;
+  }
+  .footer-brand p { color: var(--text-dim); font-size: 0.9rem; margin-top: 6px; max-width: 32ch; }
+  .footer-social { display: flex; align-items: center; gap: 14px; }
+  .social-icon {
+    display: flex; align-items: center; justify-content: center; width: 46px; height: 46px;
+    border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text-main); transition: all var(--transition-snappy);
+  }
+  .social-icon svg { width: 22px; height: 22px; fill: currentColor; }
+  .social-icon:hover {
+    background: linear-gradient(135deg,var(--accent-1),var(--accent-2)); border-color: transparent;
+    color: #fff; transform: translateY(-4px) scale(1.08); box-shadow: 0 10px 25px var(--accent-glow);
+  }
+  .footer-review-btn {
+    display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15); color: var(--text-main); font-weight: 700;
+    font-size: 0.9rem; padding: 12px 22px; border-radius: 999px; transition: all var(--transition-snappy);
+  }
+  .footer-review-btn:hover { border-color: var(--accent-1); background: rgba(255,255,255,0.09); transform: translateY(-3px); box-shadow: 0 8px 22px rgba(0,0,0,0.3); }
+  .footer-copy { text-align: center; color: var(--text-dim); font-size: 0.8rem; margin-top: 36px; opacity: 0.7; }
+  @media (max-width:640px) {
+    .footer-inner { flex-direction: column; text-align: center; }
+    .footer-brand p { max-width: 100%; }
+  }
 </style>
 </head>
 <body data-theme="home">
@@ -553,8 +665,8 @@
     </div>
     
     <div class="ba-slider reveal d-2" id="slider-win">
-      <div class="ba-layer ba-before"><img src="win-antes.jpg" alt="PC Windows Sucia"></div>
-      <div class="ba-layer ba-after"><img src="win-despues.jpg" alt="PC Windows Limpia"></div>
+      <div class="ba-layer ba-before"><img src="limpieza-pc-windows-antes-hermosillo.jpg" alt="Limpieza de PC Windows antes del servicio en Hermosillo" loading="lazy" class="lazy-img"></div>
+      <div class="ba-layer ba-after"><img src="limpieza-pc-windows-despues-hermosillo.jpg" alt="PC Windows limpia después del servicio de ChipFresco en Hermosillo" loading="lazy" class="lazy-img"></div>
       <div class="ba-divider"></div>
       <div class="ba-handle"></div>
       <input type="range" class="ba-range" min="0" max="100" value="50">
@@ -628,8 +740,8 @@
     </div>
     
     <div class="ba-slider reveal d-2" id="slider-mac">
-      <div class="ba-layer ba-before"><img src="mac-antes.jpg" alt="Mac OS Antiguo"></div>
-      <div class="ba-layer ba-after"><img src="mac-despues.jpg" alt="Mac OS Nuevo"></div>
+      <div class="ba-layer ba-before"><img src="reparacion-macbook-antes-hermosillo.jpg" alt="MacBook con sistema operativo antiguo antes de actualización en Hermosillo" loading="lazy" class="lazy-img"></div>
+      <div class="ba-layer ba-after"><img src="reparacion-macbook-despues-hermosillo.jpg" alt="MacBook actualizado y optimizado tras el servicio de ChipFresco" loading="lazy" class="lazy-img"></div>
       <div class="ba-divider"></div>
       <div class="ba-handle"></div>
       <input type="range" class="ba-range" min="0" max="100" value="50">
@@ -674,8 +786,8 @@
     </div>
     
     <div class="ba-slider reveal d-2" id="slider-xbox">
-      <div class="ba-layer ba-before"><img src="xbox-antes.jpg" alt="Xbox Series X sucia"></div>
-      <div class="ba-layer ba-after"><img src="xbox-despues.jpg" alt="Xbox Series X limpia"></div>
+      <div class="ba-layer ba-before"><img src="limpieza-consola-xbox-antes-hermosillo.jpg" alt="Consola Xbox Series X sucia antes de la limpieza en Hermosillo" loading="lazy" class="lazy-img"></div>
+      <div class="ba-layer ba-after"><img src="limpieza-consola-xbox-despues-hermosillo.jpg" alt="Consola Xbox Series X limpia tras el servicio de ChipFresco" loading="lazy" class="lazy-img"></div>
       <div class="ba-divider"></div>
       <div class="ba-handle"></div>
       <input type="range" class="ba-range" min="0" max="100" value="50">
@@ -737,11 +849,37 @@
       </div>
       
       <div class="image-box">
-        <img src="pc-armada.jpg" alt="Computadora Gamer Custom Armada">
+        <img src="armado-pc-gamer-custom-hermosillo.jpg" alt="PC gamer custom armada por ChipFresco en Hermosillo, Sonora" loading="lazy" class="lazy-img">
       </div>
     </div>
   </section>
 </div>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <div class="brand-text">Chip<span>Fresco</span></div>
+      <p>Servicio técnico de cómputo, Mac y consolas en Hermosillo, Sonora.</p>
+    </div>
+
+    <div class="footer-social">
+      <a href="https://www.instagram.com/chipfresco" target="_blank" rel="noopener" class="social-icon" title="Instagram @chipfresco" aria-label="Instagram de ChipFresco">
+        <svg viewBox="0 0 24 24"><path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 011.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 01-1.153 1.772 4.915 4.915 0 01-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 01-1.772-1.153 4.904 4.904 0 01-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 011.153-1.772A4.897 4.897 0 015.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5.4a4.6 4.6 0 100 9.2 4.6 4.6 0 000-9.2zm0 1.8a2.8 2.8 0 110 5.6 2.8 2.8 0 010-5.6zm4.9-3.3a1.08 1.08 0 100 2.16 1.08 1.08 0 000-2.16z"/></svg>
+      </a>
+      <a href="https://www.facebook.com/chipfresco" target="_blank" rel="noopener" class="social-icon" title="Facebook @chipfresco" aria-label="Facebook de ChipFresco">
+        <svg viewBox="0 0 24 24"><path d="M22 12.06C22 6.505 17.523 2 12 2S2 6.505 2 12.06c0 5.02 3.657 9.184 8.438 9.94v-7.03H7.898v-2.91h2.54V9.845c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.459h-1.26c-1.243 0-1.63.771-1.63 1.562v1.875h2.773l-.443 2.91h-2.33V22c4.78-.756 8.437-4.92 8.437-9.94z"/></svg>
+      </a>
+      <a href="https://www.tiktok.com/@chipfresco" target="_blank" rel="noopener" class="social-icon" title="TikTok @chipfresco" aria-label="TikTok de ChipFresco">
+        <svg viewBox="0 0 24 24"><path d="M16.6 5.82c-1.02-.88-1.6-2.15-1.6-3.52h-3.02v13.4a2.6 2.6 0 11-2.6-2.6c.24 0 .47.03.7.09V9.92a5.62 5.62 0 00-.7-.05A5.65 5.65 0 105.65 15.5 5.65 5.65 0 0011.3 9.85V8.1a8.62 8.62 0 004.9 1.53V6.6a5.4 5.4 0 01-1.6-.78z"/></svg>
+      </a>
+    </div>
+
+    <a href="https://g.page/r/CQCZq027RF9REAI/review" target="_blank" rel="noopener" class="footer-review-btn">
+      ⭐ Déjanos tu reseña en Google
+    </a>
+  </div>
+  <p class="footer-copy">© 2026 ChipFresco · Hermosillo, Sonora</p>
+</footer>
 
 <button class="fab-bot" id="fabBot" title="Asistente ChipFresco">💬</button>
 

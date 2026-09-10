@@ -150,6 +150,35 @@ document.getElementById('soundToggle')!.addEventListener('click', function (this
 });
 
 /* ================= TABS & ANIMACIONES ================= */
+
+/* Ajusta el alto real del panel del chatbot en móvil usando la VisualViewport API,
+   para que se comporte como el chat de Messenger: se encoge cuando aparece el
+   teclado en vez de quedar cortado o flotando detrás de la barra del navegador.
+   El CSS ya esperaba estas variables (--app-vh / --app-vh-offset); solo faltaba
+   este listener que las mantenga actualizadas. */
+function syncMobileViewport(): void {
+  const root = document.documentElement;
+  const vv = window.visualViewport;
+
+  if (!vv) {
+    // Navegadores sin soporte de VisualViewport: usamos el alto de ventana normal.
+    root.style.setProperty('--app-vh', window.innerHeight + 'px');
+    root.style.setProperty('--app-vh-offset', '0px');
+    return;
+  }
+
+  const update = (): void => {
+    root.style.setProperty('--app-vh', vv.height + 'px');
+    root.style.setProperty('--app-vh-offset', vv.offsetTop + 'px');
+  };
+
+  vv.addEventListener('resize', update);
+  vv.addEventListener('scroll', update);
+  window.addEventListener('orientationchange', () => setTimeout(update, 300));
+  update();
+}
+syncMobileViewport();
+
 function openTab(tabId: string): void {
   document.body.setAttribute('data-theme', tabId);
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -190,6 +219,22 @@ function initSlider(sliderId: string): void {
 initSlider('slider-win');
 initSlider('slider-mac');
 initSlider('slider-xbox');
+
+/* ================= CARGA DIFERIDA DE IMÁGENES CON FUNDIDO SUAVE ================= */
+function initLazyFade(): void {
+  const imgs = document.querySelectorAll<HTMLImageElement>('img.lazy-img');
+  imgs.forEach(img => {
+    if (img.complete && img.naturalWidth > 0) {
+      // Ya estaba en caché del navegador: se muestra directo, sin animar.
+      img.classList.add('is-loaded');
+    } else {
+      img.addEventListener('load', () => img.classList.add('is-loaded'), { once: true });
+      // Si la imagen falla, la mostramos igual para no dejar un hueco vacío permanente.
+      img.addEventListener('error', () => img.classList.add('is-loaded'), { once: true });
+    }
+  });
+}
+initLazyFade();
 
 /* ================= MODAL ================= */
 let selectedService = '';
@@ -262,6 +307,43 @@ function clearChips(): void {
   suggEl.innerHTML = '';
 }
 
+/* ================= VALIDACIÓN DE ENTRADAS ================= */
+function isBlank(text: string): boolean {
+  return text.trim().length === 0;
+}
+
+function shakeInput(): void {
+  const prevPlaceholder = inputEl.placeholder;
+  inputEl.classList.remove('input-shake');
+  void inputEl.offsetWidth; // fuerza reflow para poder re-disparar la animación
+  inputEl.classList.add('input-shake');
+  inputEl.placeholder = 'Escribe algo antes de enviar...';
+  setTimeout(() => {
+    inputEl.classList.remove('input-shake');
+    if (!inputEl.disabled) inputEl.placeholder = prevPlaceholder;
+  }, 450);
+}
+
+/* ================= REINICIAR CONVERSACIÓN ================= */
+function resetBotConversation(): void {
+  msgsEl.innerHTML = '';
+  clearChips();
+  botState = 'init';
+  botFlow();
+}
+
+function addRestartOption(): void {
+  const btn = document.createElement('button');
+  btn.className = 'chip-btn';
+  btn.textContent = '🔄 Iniciar otra consulta';
+  btn.onclick = function () {
+    playSound('click');
+    resetBotConversation();
+  };
+  btn.addEventListener('mouseenter', () => playSound('hover'));
+  suggEl.appendChild(btn);
+}
+
 function openBotWithFlow(preSelectedService?: string): void {
   panel.classList.add('open');
   if (preSelectedService) {
@@ -285,9 +367,6 @@ function botFlow(preSelectedService?: string): void {
   inputEl.disabled = false;
   inputEl.placeholder = 'Escribe tu nombre...';
   inputEl.focus();
-  setTimeout(() => {
-    if (window.innerWidth <= 640) inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 300);
 }
 
 function ubicacionHermosillo(esLocal: boolean): void {
@@ -299,6 +378,7 @@ function ubicacionHermosillo(esLocal: boolean): void {
       botState = 'end';
       inputEl.disabled = true;
       inputEl.placeholder = 'Servicio no disponible en tu zona.';
+      addRestartOption();
     }, 400);
   } else {
     if (userData.servicio) {
@@ -327,12 +407,16 @@ function ubicacionHermosillo(esLocal: boolean): void {
 }
 
 function handleUserInput(text: string): void {
-  if (!text.trim()) return;
-  addUserMsg(text);
+  if (isBlank(text)) {
+    shakeInput();
+    return;
+  }
+  const value = text.trim();
+  addUserMsg(value);
   inputEl.value = '';
 
   if (botState === 'esperando_nombre') {
-    userData.nombre = text;
+    userData.nombre = value;
     setTimeout(() => {
       addBotMsg('Mucho gusto ' + userData.nombre + '. Para confirmar cobertura, ¿te encuentras en Hermosillo, Sonora?');
       botState = 'esperando_ubicacion';
@@ -344,7 +428,7 @@ function handleUserInput(text: string): void {
       ]);
     }, 400);
   } else if (botState === 'esperando_resumen_pc') {
-    userData.servicio = 'Armado Custom: ' + text;
+    userData.servicio = 'Armado Custom: ' + value;
     finalizarFlujoArmado(); // Salta ubicación y horarios directo a enviar WhatsApp
   }
 }
@@ -408,6 +492,7 @@ function finalizarFlujoArmado(): void {
     scrollToBottom();
     playSound('success');
     botState = 'init';
+    addRestartOption();
   }, 600);
 }
 
@@ -421,15 +506,19 @@ function explicarHorarios(): void {
     inputEl.placeholder = 'Escribe tu preferencia de día...';
     inputEl.focus();
     botState = 'esperando_horario';
-    if (window.innerWidth <= 640) setTimeout(() => inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
   }, 500);
 }
 
 function interceptInput(text: string): void {
   if (botState === 'esperando_horario') {
-    addUserMsg(text);
+    if (isBlank(text)) {
+      shakeInput();
+      return;
+    }
+    const horario = text.trim();
+    addUserMsg(horario);
     inputEl.value = '';
-    userData.horario = text;
+    userData.horario = horario;
     setTimeout(() => {
       addBotMsg('IMPORTANTE: Las recolecciones y entregas se hacen **Únicamente en punto medio**.\n\nTenemos dos opciones. ¿Cuál te queda mejor?');
       inputEl.disabled = true;
@@ -470,6 +559,7 @@ function finalizarFlujo(punto: string): void {
     scrollToBottom();
     playSound('success');
     botState = 'init';
+    addRestartOption();
   }, 600);
 }
 
